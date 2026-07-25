@@ -1,0 +1,75 @@
+✓ tests/condenser.test.ts (66 tests) 324ms
+   ✓ condense (5)
+     ✓ keeps entity types and drops filter/orderBy/meta/root 10ms
+     ✓ drops OrderDirection and *_orderBy enums 0ms
+     ✓ keeps only referenced custom scalars 0ms
+     ✓ unwraps NonNull, List, NonNull correctly 0ms
+     ✓ renders SDL-ish output with the header 0ms
+   ✓ condense on real Uniswap V3 fixture (1)
+     ✓ produces a large reduction and drops all *_filter / *_orderBy 4ms
+   ✓ condense invariants across all real fixtures (60)
+     ✓ aave-v2-ethereum: no boilerplate leaks into the digest 10ms
+     ✓ aave-v2-polygon: no boilerplate leaks into the digest 9ms
+     ✓ aave-v3-base: no boilerplate leaks into the digest 9ms
+     ✓ aave-v3-ethereum: no boilerplate leaks into the digest 9ms
+     ✓ aave-v3-optimism: no boilerplate leaks into the digest 9ms
+     ✓ balancer-gauges-arbitrum: no boilerplate leaks into the digest 2ms
+     ✓ balancer-optimism-v2: no boilerplate leaks into the digest 3ms
+     ✓ balancer-v3-sonic: no boilerplate leaks into the digest 1ms
+     ✓ compound-v3-base: no boilerplate leaks into the digest 5ms
+     ✓ compound-v3-ethereum: no boilerplate leaks into the digest 9ms
+     ✓ compound-v3-polygon: no boilerplate leaks into the digest 5ms
+     ✓ curve-finance-ethereum: no boilerplate leaks into the digest 4ms
+     ✓ ens-subgraph-v1: no boilerplate leaks into the digest 3ms
+     ✓ ens-subgraph-v2: no boilerplate leaks into the digest 2ms
+     ✓ gmx-avalanche: no boilerplate leaks into the digest 9ms
+     ✓ lido-ethereum: no boilerplate leaks into the digest 2ms
+     ✓ makerdao-governance: no boilerplate leaks into the digest 2ms
+     ✓ makerdao-protofire: no boilerplate leaks into the digest 3ms
+     ✓ pancakeswap-v2: no boilerplate leaks into the digest 2ms
+     ✓ pancakeswap-v3-ethereum: no boilerplate leaks into the digest 6ms
+     ✓ sushiswap-mainnet: no boilerplate leaks into the digest 2ms
+     ✓ sushiswap-polygon: no boilerplate leaks into the digest 3ms
+     ✓ sushiswap-v3-ethereum: no boilerplate leaks into the digest 7ms
+     ✓ uniswap-v2-ethereum: no boilerplate leaks into the digest 2ms
+     ✓ uniswap-v3: no boilerplate leaks into the digest 3ms
+     ✓ uniswap-v3-base-alt: no boilerplate leaks into the digest 6ms
+     ✓ uniswap-v3-polygon-alt: no boilerplate leaks into the digest 4ms
+     ✓ uniswap-v4-base: no boilerplate leaks into the digest 2ms
+     ✓ uniswap-v4-bsc: no boilerplate leaks into the digest 2ms
+     ✓ uniswap-v4-ethereum: no boilerplate leaks into the digest 0ms
+     ✓ aave-v2-ethereum: digest is non-trivial and shows real reduction 13ms
+     ✓ aave-v2-polygon: digest is non-trivial and shows real reduction 12ms
+     ✓ aave-v3-base: digest is non-trivial and shows real reduction 12ms
+     ✓ aave-v3-ethereum: digest is non-trivial and shows real reduction 12ms
+     ✓ aave-v3-optimism: digest is non-trivial and shows real reduction 12ms
+     ✓ balancer-gauges-arbitrum: digest is non-trivial and shows real reduction 2ms
+     ✓ balancer-optimism-v2: digest is non-trivial and shows real reduction 4ms
+     ✓ balancer-v3-sonic: digest is non-trivial and shows real reduction 2ms
+     ✓ compound-v3-base: digest is non-trivial and shows real reduction 6ms
+     ✓ compound-v3-ethereum: digest is non-trivial and shows real reduction 11ms
+     ✓ compound-v3-polygon: digest is non-trivial and shows real reduction 7ms
+     ✓ curve-finance-ethereum: digest is non-trivial and shows real reduction 5ms
+     ✓ ens-subgraph-v1: digest is non-trivial and shows real reduction 3ms
+     ✓ ens-subgraph-v2: digest is non-trivial and shows real reduction 3ms
+     ✓ gmx-avalanche: digest is non-trivial and shows real reduction 12ms
+     ✓ lido-ethereum: digest is non-trivial and shows real reduction 3ms
+     ✓ makerdao-governance: digest is non-trivial and shows real reduction 2ms
+     ✓ makerdao-protofire: digest is non-trivial and shows real reduction 4ms
+     ✓ pancakeswap-v2: digest is non-trivial and shows real reduction 2ms
+     ✓ pancakeswap-v3-ethereum: digest is non-trivial and shows real reduction 8ms
+     ✓ sushiswap-mainnet: digest is non-trivial and shows real reduction 2ms
+     ✓ sushiswap-polygon: digest is non-trivial and shows real reduction 3ms
+     ✓ sushiswap-v3-ethereum: digest is non-trivial and shows real reduction 8ms
+     ✓ uniswap-v2-ethereum: digest is non-trivial and shows real reduction 2ms
+     ✓ uniswap-v3: digest is non-trivial and shows real reduction 4ms
+     ✓ uniswap-v3-base-alt: digest is non-trivial and shows real reduction 8ms
+     ✓ uniswap-v3-polygon-alt: digest is non-trivial and shows real reduction 4ms
+     ✓ uniswap-v4-base: digest is non-trivial and shows real reduction 3ms
+     ✓ uniswap-v4-bsc: digest is non-trivial and shows real reduction 3ms
+     ✓ uniswap-v4-ethereum: digest is non-trivial and shows real reduction 0ms
+
+ Test Files  1 passed (1)
+      Tests  66 passed (66)
+   Start at  20:30:45
+   Duration  440ms (transform 22ms, setup 0ms, import 31ms, tests 324ms, environment 0ms)

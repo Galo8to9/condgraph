@@ -24,7 +24,19 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     {
       name: "get_condensed_schema",
       description:
-        "Fetch the GraphQL schema of a subgraph on The Graph Network and return a condensed digest containing only entities, fields, and relationships — with auto-generated filter/orderBy boilerplate stripped. Typical reduction: 50-100x fewer tokens than raw introspection. Use this instead of a full schema fetch when you need to write queries against a subgraph but do not need to see the generated filter input types (they follow standard subgraph conventions: field_gt, field_lt, field_in, field_contains, orderBy, orderDirection, first, skip).",
+        "Fetch the GraphQL schema of a subgraph on The Graph Network and return a " +
+        "condensed digest: entities, fields, relationships, domain enums, and " +
+        "referenced custom scalars, with auto-generated filter and ordering types " +
+        "stripped. Measured across 30 live subgraphs: 20-78x fewer tokens than raw " +
+        "introspection (median 32x), 6-21x fewer than printed SDL. Use this whenever " +
+        "you need to write a query against a subgraph. The omitted types follow " +
+        "standard subgraph conventions that still work in queries: " +
+        "where: { field, field_gt, field_lt, field_gte, field_lte, field_in, " +
+        "field_not, field_contains }, orderBy: <any field on the entity>, " +
+        "orderDirection: asc | desc, first, skip, block: { number }. Query root " +
+        "fields are the entity name in lowerCamelCase for single lookups by id and " +
+        "its plural for lists; note graph-node pluralization is irregular " +
+        "(Factory -> factories, but PoolDayData -> poolDayDatas).",
       inputSchema: {
         type: "object",
         properties: {
