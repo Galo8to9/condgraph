@@ -1,0 +1,2135 @@
+"""
+Marks the GraphQL type as indexable entity.  Each type that should be an entity is required to be annotated with this directive.
+"""
+directive @entity on OBJECT
+
+"""Defined a Subgraph ID for an object type"""
+directive @subgraphId(id: String!) on OBJECT
+
+"""
+creates a virtual field on the entity that may be queried but cannot be set manually through the mappings API.
+"""
+directive @derivedFrom(field: String!) on FIELD_DEFINITION
+
+"""
+Indicates whether the current, partially filled bucket should be included in the response. Defaults to `exclude`
+"""
+enum Aggregation_current {
+  """Exclude the current, partially filled bucket from the response"""
+  exclude
+
+  """Include the current, partially filled bucket in the response"""
+  include
+}
+
+enum Aggregation_interval {
+  hour
+  day
+}
+
+scalar BigDecimal
+
+scalar BigInt
+
+input BlockChangedFilter {
+  number_gte: Int!
+}
+
+input Block_height {
+  hash: Bytes
+  number: Int
+  number_gte: Int
+}
+
+scalar Bytes
+
+type Factory {
+  """Unique identifier for the Factory"""
+  id: Bytes!
+
+  """Address of the Factory contract"""
+  address: Bytes!
+
+  """Type of pools this Factory creates"""
+  type: PoolType!
+
+  """Version number of the Factory"""
+  version: Int!
+
+  """Pools created by this Factory"""
+  pools(skip: Int = 0, first: Int = 100, orderBy: Pool_orderBy, orderDirection: OrderDirection, where: Pool_filter): [Pool!]
+}
+
+input Factory_filter {
+  id: Bytes
+  id_not: Bytes
+  id_gt: Bytes
+  id_lt: Bytes
+  id_gte: Bytes
+  id_lte: Bytes
+  id_in: [Bytes!]
+  id_not_in: [Bytes!]
+  id_contains: Bytes
+  id_not_contains: Bytes
+  address: Bytes
+  address_not: Bytes
+  address_gt: Bytes
+  address_lt: Bytes
+  address_gte: Bytes
+  address_lte: Bytes
+  address_in: [Bytes!]
+  address_not_in: [Bytes!]
+  address_contains: Bytes
+  address_not_contains: Bytes
+  type: PoolType
+  type_not: PoolType
+  type_in: [PoolType!]
+  type_not_in: [PoolType!]
+  version: Int
+  version_not: Int
+  version_gt: Int
+  version_lt: Int
+  version_gte: Int
+  version_lte: Int
+  version_in: [Int!]
+  version_not_in: [Int!]
+  pools_: Pool_filter
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [Factory_filter]
+  or: [Factory_filter]
+}
+
+enum Factory_orderBy {
+  id
+  address
+  type
+  version
+  pools
+}
+
+type FixedLBPParams {
+  """Unique identifier for the FixedLBPParams"""
+  id: Bytes!
+
+  """Owner of the Fixed Price LBP"""
+  owner: Bytes!
+
+  """Project token for the Fixed Price LBP"""
+  projectToken: Bytes!
+
+  """Reserve token for the Fixed Price LBP"""
+  reserveToken: Bytes!
+
+  """Start time of the Fixed Price LBP"""
+  startTime: BigInt!
+
+  """End time of the Fixed Price LBP"""
+  endTime: BigInt!
+
+  """Project token swap in blocked"""
+  isProjectTokenSwapInBlocked: Boolean!
+
+  """Project token rate (fixed price)"""
+  projectTokenRate: BigInt!
+}
+
+input FixedLBPParams_filter {
+  id: Bytes
+  id_not: Bytes
+  id_gt: Bytes
+  id_lt: Bytes
+  id_gte: Bytes
+  id_lte: Bytes
+  id_in: [Bytes!]
+  id_not_in: [Bytes!]
+  id_contains: Bytes
+  id_not_contains: Bytes
+  owner: Bytes
+  owner_not: Bytes
+  owner_gt: Bytes
+  owner_lt: Bytes
+  owner_gte: Bytes
+  owner_lte: Bytes
+  owner_in: [Bytes!]
+  owner_not_in: [Bytes!]
+  owner_contains: Bytes
+  owner_not_contains: Bytes
+  projectToken: Bytes
+  projectToken_not: Bytes
+  projectToken_gt: Bytes
+  projectToken_lt: Bytes
+  projectToken_gte: Bytes
+  projectToken_lte: Bytes
+  projectToken_in: [Bytes!]
+  projectToken_not_in: [Bytes!]
+  projectToken_contains: Bytes
+  projectToken_not_contains: Bytes
+  reserveToken: Bytes
+  reserveToken_not: Bytes
+  reserveToken_gt: Bytes
+  reserveToken_lt: Bytes
+  reserveToken_gte: Bytes
+  reserveToken_lte: Bytes
+  reserveToken_in: [Bytes!]
+  reserveToken_not_in: [Bytes!]
+  reserveToken_contains: Bytes
+  reserveToken_not_contains: Bytes
+  startTime: BigInt
+  startTime_not: BigInt
+  startTime_gt: BigInt
+  startTime_lt: BigInt
+  startTime_gte: BigInt
+  startTime_lte: BigInt
+  startTime_in: [BigInt!]
+  startTime_not_in: [BigInt!]
+  endTime: BigInt
+  endTime_not: BigInt
+  endTime_gt: BigInt
+  endTime_lt: BigInt
+  endTime_gte: BigInt
+  endTime_lte: BigInt
+  endTime_in: [BigInt!]
+  endTime_not_in: [BigInt!]
+  isProjectTokenSwapInBlocked: Boolean
+  isProjectTokenSwapInBlocked_not: Boolean
+  isProjectTokenSwapInBlocked_in: [Boolean!]
+  isProjectTokenSwapInBlocked_not_in: [Boolean!]
+  projectTokenRate: BigInt
+  projectTokenRate_not: BigInt
+  projectTokenRate_gt: BigInt
+  projectTokenRate_lt: BigInt
+  projectTokenRate_gte: BigInt
+  projectTokenRate_lte: BigInt
+  projectTokenRate_in: [BigInt!]
+  projectTokenRate_not_in: [BigInt!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [FixedLBPParams_filter]
+  or: [FixedLBPParams_filter]
+}
+
+enum FixedLBPParams_orderBy {
+  id
+  owner
+  projectToken
+  reserveToken
+  startTime
+  endTime
+  isProjectTokenSwapInBlocked
+  projectTokenRate
+}
+
+type Gyro2Params {
+  """Unique identifier for the Gyro2Params"""
+  id: Bytes!
+  sqrtAlpha: BigDecimal!
+  sqrtBeta: BigDecimal!
+}
+
+input Gyro2Params_filter {
+  id: Bytes
+  id_not: Bytes
+  id_gt: Bytes
+  id_lt: Bytes
+  id_gte: Bytes
+  id_lte: Bytes
+  id_in: [Bytes!]
+  id_not_in: [Bytes!]
+  id_contains: Bytes
+  id_not_contains: Bytes
+  sqrtAlpha: BigDecimal
+  sqrtAlpha_not: BigDecimal
+  sqrtAlpha_gt: BigDecimal
+  sqrtAlpha_lt: BigDecimal
+  sqrtAlpha_gte: BigDecimal
+  sqrtAlpha_lte: BigDecimal
+  sqrtAlpha_in: [BigDecimal!]
+  sqrtAlpha_not_in: [BigDecimal!]
+  sqrtBeta: BigDecimal
+  sqrtBeta_not: BigDecimal
+  sqrtBeta_gt: BigDecimal
+  sqrtBeta_lt: BigDecimal
+  sqrtBeta_gte: BigDecimal
+  sqrtBeta_lte: BigDecimal
+  sqrtBeta_in: [BigDecimal!]
+  sqrtBeta_not_in: [BigDecimal!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [Gyro2Params_filter]
+  or: [Gyro2Params_filter]
+}
+
+enum Gyro2Params_orderBy {
+  id
+  sqrtAlpha
+  sqrtBeta
+}
+
+type GyroEParams {
+  """Unique identifier for the GyroEParams"""
+  id: Bytes!
+  alpha: BigDecimal!
+  beta: BigDecimal!
+  c: BigDecimal!
+  s: BigDecimal!
+  lambda: BigDecimal!
+  tauAlphaX: BigDecimal!
+  tauAlphaY: BigDecimal!
+  tauBetaX: BigDecimal!
+  tauBetaY: BigDecimal!
+  u: BigDecimal!
+  v: BigDecimal!
+  w: BigDecimal!
+  z: BigDecimal!
+  dSq: BigDecimal!
+}
+
+input GyroEParams_filter {
+  id: Bytes
+  id_not: Bytes
+  id_gt: Bytes
+  id_lt: Bytes
+  id_gte: Bytes
+  id_lte: Bytes
+  id_in: [Bytes!]
+  id_not_in: [Bytes!]
+  id_contains: Bytes
+  id_not_contains: Bytes
+  alpha: BigDecimal
+  alpha_not: BigDecimal
+  alpha_gt: BigDecimal
+  alpha_lt: BigDecimal
+  alpha_gte: BigDecimal
+  alpha_lte: BigDecimal
+  alpha_in: [BigDecimal!]
+  alpha_not_in: [BigDecimal!]
+  beta: BigDecimal
+  beta_not: BigDecimal
+  beta_gt: BigDecimal
+  beta_lt: BigDecimal
+  beta_gte: BigDecimal
+  beta_lte: BigDecimal
+  beta_in: [BigDecimal!]
+  beta_not_in: [BigDecimal!]
+  c: BigDecimal
+  c_not: BigDecimal
+  c_gt: BigDecimal
+  c_lt: BigDecimal
+  c_gte: BigDecimal
+  c_lte: BigDecimal
+  c_in: [BigDecimal!]
+  c_not_in: [BigDecimal!]
+  s: BigDecimal
+  s_not: BigDecimal
+  s_gt: BigDecimal
+  s_lt: BigDecimal
+  s_gte: BigDecimal
+  s_lte: BigDecimal
+  s_in: [BigDecimal!]
+  s_not_in: [BigDecimal!]
+  lambda: BigDecimal
+  lambda_not: BigDecimal
+  lambda_gt: BigDecimal
+  lambda_lt: BigDecimal
+  lambda_gte: BigDecimal
+  lambda_lte: BigDecimal
+  lambda_in: [BigDecimal!]
+  lambda_not_in: [BigDecimal!]
+  tauAlphaX: BigDecimal
+  tauAlphaX_not: BigDecimal
+  tauAlphaX_gt: BigDecimal
+  tauAlphaX_lt: BigDecimal
+  tauAlphaX_gte: BigDecimal
+  tauAlphaX_lte: BigDecimal
+  tauAlphaX_in: [BigDecimal!]
+  tauAlphaX_not_in: [BigDecimal!]
+  tauAlphaY: BigDecimal
+  tauAlphaY_not: BigDecimal
+  tauAlphaY_gt: BigDecimal
+  tauAlphaY_lt: BigDecimal
+  tauAlphaY_gte: BigDecimal
+  tauAlphaY_lte: BigDecimal
+  tauAlphaY_in: [BigDecimal!]
+  tauAlphaY_not_in: [BigDecimal!]
+  tauBetaX: BigDecimal
+  tauBetaX_not: BigDecimal
+  tauBetaX_gt: BigDecimal
+  tauBetaX_lt: BigDecimal
+  tauBetaX_gte: BigDecimal
+  tauBetaX_lte: BigDecimal
+  tauBetaX_in: [BigDecimal!]
+  tauBetaX_not_in: [BigDecimal!]
+  tauBetaY: BigDecimal
+  tauBetaY_not: BigDecimal
+  tauBetaY_gt: BigDecimal
+  tauBetaY_lt: BigDecimal
+  tauBetaY_gte: BigDecimal
+  tauBetaY_lte: BigDecimal
+  tauBetaY_in: [BigDecimal!]
+  tauBetaY_not_in: [BigDecimal!]
+  u: BigDecimal
+  u_not: BigDecimal
+  u_gt: BigDecimal
+  u_lt: BigDecimal
+  u_gte: BigDecimal
+  u_lte: BigDecimal
+  u_in: [BigDecimal!]
+  u_not_in: [BigDecimal!]
+  v: BigDecimal
+  v_not: BigDecimal
+  v_gt: BigDecimal
+  v_lt: BigDecimal
+  v_gte: BigDecimal
+  v_lte: BigDecimal
+  v_in: [BigDecimal!]
+  v_not_in: [BigDecimal!]
+  w: BigDecimal
+  w_not: BigDecimal
+  w_gt: BigDecimal
+  w_lt: BigDecimal
+  w_gte: BigDecimal
+  w_lte: BigDecimal
+  w_in: [BigDecimal!]
+  w_not_in: [BigDecimal!]
+  z: BigDecimal
+  z_not: BigDecimal
+  z_gt: BigDecimal
+  z_lt: BigDecimal
+  z_gte: BigDecimal
+  z_lte: BigDecimal
+  z_in: [BigDecimal!]
+  z_not_in: [BigDecimal!]
+  dSq: BigDecimal
+  dSq_not: BigDecimal
+  dSq_gt: BigDecimal
+  dSq_lt: BigDecimal
+  dSq_gte: BigDecimal
+  dSq_lte: BigDecimal
+  dSq_in: [BigDecimal!]
+  dSq_not_in: [BigDecimal!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [GyroEParams_filter]
+  or: [GyroEParams_filter]
+}
+
+enum GyroEParams_orderBy {
+  id
+  alpha
+  beta
+  c
+  s
+  lambda
+  tauAlphaX
+  tauAlphaY
+  tauBetaX
+  tauBetaY
+  u
+  v
+  w
+  z
+  dSq
+}
+
+"""8 bytes signed integer"""
+scalar Int8
+
+type LBPParams {
+  """Unique identifier for the LBPParams"""
+  id: Bytes!
+
+  """Owner of the LBP"""
+  owner: Bytes!
+
+  """Project token for the LBP"""
+  projectToken: Bytes!
+
+  """Reserve token for the LBP"""
+  reserveToken: Bytes!
+
+  """Initial weight of the project token"""
+  projectTokenStartWeight: BigInt!
+
+  """Initial weight of the reserve token"""
+  reserveTokenStartWeight: BigInt!
+
+  """Final weight of the project token"""
+  projectTokenEndWeight: BigInt!
+
+  """Final weight of the reserve token"""
+  reserveTokenEndWeight: BigInt!
+
+  """Start time of the LBP"""
+  startTime: BigInt!
+
+  """End time of the LBP"""
+  endTime: BigInt!
+
+  """Project token swap in blocked"""
+  isProjectTokenSwapInBlocked: Boolean!
+
+  """
+  The virtual token balance for the reserve token, indicating a seedless LBP if >0
+  """
+  reserveTokenVirtualBalance: BigInt!
+}
+
+input LBPParams_filter {
+  id: Bytes
+  id_not: Bytes
+  id_gt: Bytes
+  id_lt: Bytes
+  id_gte: Bytes
+  id_lte: Bytes
+  id_in: [Bytes!]
+  id_not_in: [Bytes!]
+  id_contains: Bytes
+  id_not_contains: Bytes
+  owner: Bytes
+  owner_not: Bytes
+  owner_gt: Bytes
+  owner_lt: Bytes
+  owner_gte: Bytes
+  owner_lte: Bytes
+  owner_in: [Bytes!]
+  owner_not_in: [Bytes!]
+  owner_contains: Bytes
+  owner_not_contains: Bytes
+  projectToken: Bytes
+  projectToken_not: Bytes
+  projectToken_gt: Bytes
+  projectToken_lt: Bytes
+  projectToken_gte: Bytes
+  projectToken_lte: Bytes
+  projectToken_in: [Bytes!]
+  projectToken_not_in: [Bytes!]
+  projectToken_contains: Bytes
+  projectToken_not_contains: Bytes
+  reserveToken: Bytes
+  reserveToken_not: Bytes
+  reserveToken_gt: Bytes
+  reserveToken_lt: Bytes
+  reserveToken_gte: Bytes
+  reserveToken_lte: Bytes
+  reserveToken_in: [Bytes!]
+  reserveToken_not_in: [Bytes!]
+  reserveToken_contains: Bytes
+  reserveToken_not_contains: Bytes
+  projectTokenStartWeight: BigInt
+  projectTokenStartWeight_not: BigInt
+  projectTokenStartWeight_gt: BigInt
+  projectTokenStartWeight_lt: BigInt
+  projectTokenStartWeight_gte: BigInt
+  projectTokenStartWeight_lte: BigInt
+  projectTokenStartWeight_in: [BigInt!]
+  projectTokenStartWeight_not_in: [BigInt!]
+  reserveTokenStartWeight: BigInt
+  reserveTokenStartWeight_not: BigInt
+  reserveTokenStartWeight_gt: BigInt
+  reserveTokenStartWeight_lt: BigInt
+  reserveTokenStartWeight_gte: BigInt
+  reserveTokenStartWeight_lte: BigInt
+  reserveTokenStartWeight_in: [BigInt!]
+  reserveTokenStartWeight_not_in: [BigInt!]
+  projectTokenEndWeight: BigInt
+  projectTokenEndWeight_not: BigInt
+  projectTokenEndWeight_gt: BigInt
+  projectTokenEndWeight_lt: BigInt
+  projectTokenEndWeight_gte: BigInt
+  projectTokenEndWeight_lte: BigInt
+  projectTokenEndWeight_in: [BigInt!]
+  projectTokenEndWeight_not_in: [BigInt!]
+  reserveTokenEndWeight: BigInt
+  reserveTokenEndWeight_not: BigInt
+  reserveTokenEndWeight_gt: BigInt
+  reserveTokenEndWeight_lt: BigInt
+  reserveTokenEndWeight_gte: BigInt
+  reserveTokenEndWeight_lte: BigInt
+  reserveTokenEndWeight_in: [BigInt!]
+  reserveTokenEndWeight_not_in: [BigInt!]
+  startTime: BigInt
+  startTime_not: BigInt
+  startTime_gt: BigInt
+  startTime_lt: BigInt
+  startTime_gte: BigInt
+  startTime_lte: BigInt
+  startTime_in: [BigInt!]
+  startTime_not_in: [BigInt!]
+  endTime: BigInt
+  endTime_not: BigInt
+  endTime_gt: BigInt
+  endTime_lt: BigInt
+  endTime_gte: BigInt
+  endTime_lte: BigInt
+  endTime_in: [BigInt!]
+  endTime_not_in: [BigInt!]
+  isProjectTokenSwapInBlocked: Boolean
+  isProjectTokenSwapInBlocked_not: Boolean
+  isProjectTokenSwapInBlocked_in: [Boolean!]
+  isProjectTokenSwapInBlocked_not_in: [Boolean!]
+  reserveTokenVirtualBalance: BigInt
+  reserveTokenVirtualBalance_not: BigInt
+  reserveTokenVirtualBalance_gt: BigInt
+  reserveTokenVirtualBalance_lt: BigInt
+  reserveTokenVirtualBalance_gte: BigInt
+  reserveTokenVirtualBalance_lte: BigInt
+  reserveTokenVirtualBalance_in: [BigInt!]
+  reserveTokenVirtualBalance_not_in: [BigInt!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [LBPParams_filter]
+  or: [LBPParams_filter]
+}
+
+enum LBPParams_orderBy {
+  id
+  owner
+  projectToken
+  reserveToken
+  projectTokenStartWeight
+  reserveTokenStartWeight
+  projectTokenEndWeight
+  reserveTokenEndWeight
+  startTime
+  endTime
+  isProjectTokenSwapInBlocked
+  reserveTokenVirtualBalance
+}
+
+"""
+The severity level of a log entry.
+Log levels are ordered from most to least severe: CRITICAL > ERROR > WARNING > INFO > DEBUG
+"""
+enum LogLevel {
+  """Critical errors that require immediate attention"""
+  CRITICAL
+
+  """Error conditions that indicate a failure"""
+  ERROR
+
+  """Warning conditions that may require attention"""
+  WARNING
+
+  """Informational messages about normal operations"""
+  INFO
+
+  """Detailed diagnostic information for debugging"""
+  DEBUG
+}
+
+"""Defines the order direction, either ascending or descending"""
+enum OrderDirection {
+  asc
+  desc
+}
+
+type Pool {
+  """Unique identifier for the Pool"""
+  id: Bytes!
+
+  """Address of the Pool contract"""
+  address: Bytes!
+
+  """Factory that created this Pool"""
+  factory: Factory!
+
+  """Parameters for Weighted pools (null for other pool types)"""
+  weightedParams: WeightedParams
+
+  """Parameters for Stable pools (null for other pool types)"""
+  stableParams: StableParams
+
+  """Parameters for StableSurge pools (null for other pool types)"""
+  stableSurgeParams: StableSurgeParams
+
+  """Parameters for Gyro2 pools (null for other pool types)"""
+  gyro2Params: Gyro2Params
+
+  """Parameters for GyroE pools (null for other pool types)"""
+  gyroEParams: GyroEParams
+
+  """Parameters for QuantAMMWeighted pools (null for other pool types)"""
+  quantAMMWeightedParams: QuantAMMWeightedParams
+
+  """Parameters for LBP pools (null for other pool types)"""
+  lbpParams: LBPParams
+
+  """Parameters for Fixed Price LBP pools (null for other pool types)"""
+  fixedLBPParams: FixedLBPParams
+
+  """Parameters for ReClamm pools (null for other pool types)"""
+  reClammParams: ReClammParams
+}
+
+enum PoolType {
+  Weighted
+  Stable
+  QuantAMMWeighted
+  StableSurge
+  Gyro2
+  GyroE
+  LBP
+  FixedLBP
+  ReClamm
+}
+
+input Pool_filter {
+  id: Bytes
+  id_not: Bytes
+  id_gt: Bytes
+  id_lt: Bytes
+  id_gte: Bytes
+  id_lte: Bytes
+  id_in: [Bytes!]
+  id_not_in: [Bytes!]
+  id_contains: Bytes
+  id_not_contains: Bytes
+  address: Bytes
+  address_not: Bytes
+  address_gt: Bytes
+  address_lt: Bytes
+  address_gte: Bytes
+  address_lte: Bytes
+  address_in: [Bytes!]
+  address_not_in: [Bytes!]
+  address_contains: Bytes
+  address_not_contains: Bytes
+  factory: String
+  factory_not: String
+  factory_gt: String
+  factory_lt: String
+  factory_gte: String
+  factory_lte: String
+  factory_in: [String!]
+  factory_not_in: [String!]
+  factory_contains: String
+  factory_contains_nocase: String
+  factory_not_contains: String
+  factory_not_contains_nocase: String
+  factory_starts_with: String
+  factory_starts_with_nocase: String
+  factory_not_starts_with: String
+  factory_not_starts_with_nocase: String
+  factory_ends_with: String
+  factory_ends_with_nocase: String
+  factory_not_ends_with: String
+  factory_not_ends_with_nocase: String
+  factory_: Factory_filter
+  weightedParams: String
+  weightedParams_not: String
+  weightedParams_gt: String
+  weightedParams_lt: String
+  weightedParams_gte: String
+  weightedParams_lte: String
+  weightedParams_in: [String!]
+  weightedParams_not_in: [String!]
+  weightedParams_contains: String
+  weightedParams_contains_nocase: String
+  weightedParams_not_contains: String
+  weightedParams_not_contains_nocase: String
+  weightedParams_starts_with: String
+  weightedParams_starts_with_nocase: String
+  weightedParams_not_starts_with: String
+  weightedParams_not_starts_with_nocase: String
+  weightedParams_ends_with: String
+  weightedParams_ends_with_nocase: String
+  weightedParams_not_ends_with: String
+  weightedParams_not_ends_with_nocase: String
+  weightedParams_: WeightedParams_filter
+  stableParams: String
+  stableParams_not: String
+  stableParams_gt: String
+  stableParams_lt: String
+  stableParams_gte: String
+  stableParams_lte: String
+  stableParams_in: [String!]
+  stableParams_not_in: [String!]
+  stableParams_contains: String
+  stableParams_contains_nocase: String
+  stableParams_not_contains: String
+  stableParams_not_contains_nocase: String
+  stableParams_starts_with: String
+  stableParams_starts_with_nocase: String
+  stableParams_not_starts_with: String
+  stableParams_not_starts_with_nocase: String
+  stableParams_ends_with: String
+  stableParams_ends_with_nocase: String
+  stableParams_not_ends_with: String
+  stableParams_not_ends_with_nocase: String
+  stableParams_: StableParams_filter
+  stableSurgeParams: String
+  stableSurgeParams_not: String
+  stableSurgeParams_gt: String
+  stableSurgeParams_lt: String
+  stableSurgeParams_gte: String
+  stableSurgeParams_lte: String
+  stableSurgeParams_in: [String!]
+  stableSurgeParams_not_in: [String!]
+  stableSurgeParams_contains: String
+  stableSurgeParams_contains_nocase: String
+  stableSurgeParams_not_contains: String
+  stableSurgeParams_not_contains_nocase: String
+  stableSurgeParams_starts_with: String
+  stableSurgeParams_starts_with_nocase: String
+  stableSurgeParams_not_starts_with: String
+  stableSurgeParams_not_starts_with_nocase: String
+  stableSurgeParams_ends_with: String
+  stableSurgeParams_ends_with_nocase: String
+  stableSurgeParams_not_ends_with: String
+  stableSurgeParams_not_ends_with_nocase: String
+  stableSurgeParams_: StableSurgeParams_filter
+  gyro2Params: String
+  gyro2Params_not: String
+  gyro2Params_gt: String
+  gyro2Params_lt: String
+  gyro2Params_gte: String
+  gyro2Params_lte: String
+  gyro2Params_in: [String!]
+  gyro2Params_not_in: [String!]
+  gyro2Params_contains: String
+  gyro2Params_contains_nocase: String
+  gyro2Params_not_contains: String
+  gyro2Params_not_contains_nocase: String
+  gyro2Params_starts_with: String
+  gyro2Params_starts_with_nocase: String
+  gyro2Params_not_starts_with: String
+  gyro2Params_not_starts_with_nocase: String
+  gyro2Params_ends_with: String
+  gyro2Params_ends_with_nocase: String
+  gyro2Params_not_ends_with: String
+  gyro2Params_not_ends_with_nocase: String
+  gyro2Params_: Gyro2Params_filter
+  gyroEParams: String
+  gyroEParams_not: String
+  gyroEParams_gt: String
+  gyroEParams_lt: String
+  gyroEParams_gte: String
+  gyroEParams_lte: String
+  gyroEParams_in: [String!]
+  gyroEParams_not_in: [String!]
+  gyroEParams_contains: String
+  gyroEParams_contains_nocase: String
+  gyroEParams_not_contains: String
+  gyroEParams_not_contains_nocase: String
+  gyroEParams_starts_with: String
+  gyroEParams_starts_with_nocase: String
+  gyroEParams_not_starts_with: String
+  gyroEParams_not_starts_with_nocase: String
+  gyroEParams_ends_with: String
+  gyroEParams_ends_with_nocase: String
+  gyroEParams_not_ends_with: String
+  gyroEParams_not_ends_with_nocase: String
+  gyroEParams_: GyroEParams_filter
+  quantAMMWeightedParams: String
+  quantAMMWeightedParams_not: String
+  quantAMMWeightedParams_gt: String
+  quantAMMWeightedParams_lt: String
+  quantAMMWeightedParams_gte: String
+  quantAMMWeightedParams_lte: String
+  quantAMMWeightedParams_in: [String!]
+  quantAMMWeightedParams_not_in: [String!]
+  quantAMMWeightedParams_contains: String
+  quantAMMWeightedParams_contains_nocase: String
+  quantAMMWeightedParams_not_contains: String
+  quantAMMWeightedParams_not_contains_nocase: String
+  quantAMMWeightedParams_starts_with: String
+  quantAMMWeightedParams_starts_with_nocase: String
+  quantAMMWeightedParams_not_starts_with: String
+  quantAMMWeightedParams_not_starts_with_nocase: String
+  quantAMMWeightedParams_ends_with: String
+  quantAMMWeightedParams_ends_with_nocase: String
+  quantAMMWeightedParams_not_ends_with: String
+  quantAMMWeightedParams_not_ends_with_nocase: String
+  quantAMMWeightedParams_: QuantAMMWeightedParams_filter
+  lbpParams: String
+  lbpParams_not: String
+  lbpParams_gt: String
+  lbpParams_lt: String
+  lbpParams_gte: String
+  lbpParams_lte: String
+  lbpParams_in: [String!]
+  lbpParams_not_in: [String!]
+  lbpParams_contains: String
+  lbpParams_contains_nocase: String
+  lbpParams_not_contains: String
+  lbpParams_not_contains_nocase: String
+  lbpParams_starts_with: String
+  lbpParams_starts_with_nocase: String
+  lbpParams_not_starts_with: String
+  lbpParams_not_starts_with_nocase: String
+  lbpParams_ends_with: String
+  lbpParams_ends_with_nocase: String
+  lbpParams_not_ends_with: String
+  lbpParams_not_ends_with_nocase: String
+  lbpParams_: LBPParams_filter
+  fixedLBPParams: String
+  fixedLBPParams_not: String
+  fixedLBPParams_gt: String
+  fixedLBPParams_lt: String
+  fixedLBPParams_gte: String
+  fixedLBPParams_lte: String
+  fixedLBPParams_in: [String!]
+  fixedLBPParams_not_in: [String!]
+  fixedLBPParams_contains: String
+  fixedLBPParams_contains_nocase: String
+  fixedLBPParams_not_contains: String
+  fixedLBPParams_not_contains_nocase: String
+  fixedLBPParams_starts_with: String
+  fixedLBPParams_starts_with_nocase: String
+  fixedLBPParams_not_starts_with: String
+  fixedLBPParams_not_starts_with_nocase: String
+  fixedLBPParams_ends_with: String
+  fixedLBPParams_ends_with_nocase: String
+  fixedLBPParams_not_ends_with: String
+  fixedLBPParams_not_ends_with_nocase: String
+  fixedLBPParams_: FixedLBPParams_filter
+  reClammParams: String
+  reClammParams_not: String
+  reClammParams_gt: String
+  reClammParams_lt: String
+  reClammParams_gte: String
+  reClammParams_lte: String
+  reClammParams_in: [String!]
+  reClammParams_not_in: [String!]
+  reClammParams_contains: String
+  reClammParams_contains_nocase: String
+  reClammParams_not_contains: String
+  reClammParams_not_contains_nocase: String
+  reClammParams_starts_with: String
+  reClammParams_starts_with_nocase: String
+  reClammParams_not_starts_with: String
+  reClammParams_not_starts_with_nocase: String
+  reClammParams_ends_with: String
+  reClammParams_ends_with_nocase: String
+  reClammParams_not_ends_with: String
+  reClammParams_not_ends_with_nocase: String
+  reClammParams_: ReClammParams_filter
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [Pool_filter]
+  or: [Pool_filter]
+}
+
+enum Pool_orderBy {
+  id
+  address
+  factory
+  factory__id
+  factory__address
+  factory__type
+  factory__version
+  weightedParams
+  weightedParams__id
+  stableParams
+  stableParams__id
+  stableParams__amp
+  stableSurgeParams
+  stableSurgeParams__id
+  stableSurgeParams__amp
+  stableSurgeParams__maxSurgeFeePercentage
+  stableSurgeParams__surgeThresholdPercentage
+  gyro2Params
+  gyro2Params__id
+  gyro2Params__sqrtAlpha
+  gyro2Params__sqrtBeta
+  gyroEParams
+  gyroEParams__id
+  gyroEParams__alpha
+  gyroEParams__beta
+  gyroEParams__c
+  gyroEParams__s
+  gyroEParams__lambda
+  gyroEParams__tauAlphaX
+  gyroEParams__tauAlphaY
+  gyroEParams__tauBetaX
+  gyroEParams__tauBetaY
+  gyroEParams__u
+  gyroEParams__v
+  gyroEParams__w
+  gyroEParams__z
+  gyroEParams__dSq
+  quantAMMWeightedParams
+  quantAMMWeightedParams__id
+  quantAMMWeightedParams__oracleStalenessThreshold
+  quantAMMWeightedParams__poolRegistry
+  quantAMMWeightedParams__epsilonMax
+  quantAMMWeightedParams__absoluteWeightGuardRail
+  quantAMMWeightedParams__maxTradeSizeRatio
+  quantAMMWeightedParams__updateInterval
+  quantAMMWeightedParams__lastUpdateIntervalTime
+  quantAMMWeightedParams__lastInterpolationTimePossible
+  quantAMMWeightedParams__runner
+  quantAMMWeightedParams__rule
+  lbpParams
+  lbpParams__id
+  lbpParams__owner
+  lbpParams__projectToken
+  lbpParams__reserveToken
+  lbpParams__projectTokenStartWeight
+  lbpParams__reserveTokenStartWeight
+  lbpParams__projectTokenEndWeight
+  lbpParams__reserveTokenEndWeight
+  lbpParams__startTime
+  lbpParams__endTime
+  lbpParams__isProjectTokenSwapInBlocked
+  lbpParams__reserveTokenVirtualBalance
+  fixedLBPParams
+  fixedLBPParams__id
+  fixedLBPParams__owner
+  fixedLBPParams__projectToken
+  fixedLBPParams__reserveToken
+  fixedLBPParams__startTime
+  fixedLBPParams__endTime
+  fixedLBPParams__isProjectTokenSwapInBlocked
+  fixedLBPParams__projectTokenRate
+  reClammParams
+  reClammParams__id
+  reClammParams__lastTimestamp
+  reClammParams__dailyPriceShiftExponent
+  reClammParams__dailyPriceShiftBase
+  reClammParams__centerednessMargin
+  reClammParams__currentFourthRootPriceRatio
+  reClammParams__startFourthRootPriceRatio
+  reClammParams__endFourthRootPriceRatio
+  reClammParams__priceRatioUpdateStartTime
+  reClammParams__priceRatioUpdateEndTime
+}
+
+type QuantAMMWeightedDetail {
+  id: Bytes!
+  category: String!
+  name: String!
+  type: String!
+  value: String!
+  pool: QuantAMMWeightedParams!
+}
+
+input QuantAMMWeightedDetail_filter {
+  id: Bytes
+  id_not: Bytes
+  id_gt: Bytes
+  id_lt: Bytes
+  id_gte: Bytes
+  id_lte: Bytes
+  id_in: [Bytes!]
+  id_not_in: [Bytes!]
+  id_contains: Bytes
+  id_not_contains: Bytes
+  category: String
+  category_not: String
+  category_gt: String
+  category_lt: String
+  category_gte: String
+  category_lte: String
+  category_in: [String!]
+  category_not_in: [String!]
+  category_contains: String
+  category_contains_nocase: String
+  category_not_contains: String
+  category_not_contains_nocase: String
+  category_starts_with: String
+  category_starts_with_nocase: String
+  category_not_starts_with: String
+  category_not_starts_with_nocase: String
+  category_ends_with: String
+  category_ends_with_nocase: String
+  category_not_ends_with: String
+  category_not_ends_with_nocase: String
+  name: String
+  name_not: String
+  name_gt: String
+  name_lt: String
+  name_gte: String
+  name_lte: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_contains: String
+  name_contains_nocase: String
+  name_not_contains: String
+  name_not_contains_nocase: String
+  name_starts_with: String
+  name_starts_with_nocase: String
+  name_not_starts_with: String
+  name_not_starts_with_nocase: String
+  name_ends_with: String
+  name_ends_with_nocase: String
+  name_not_ends_with: String
+  name_not_ends_with_nocase: String
+  type: String
+  type_not: String
+  type_gt: String
+  type_lt: String
+  type_gte: String
+  type_lte: String
+  type_in: [String!]
+  type_not_in: [String!]
+  type_contains: String
+  type_contains_nocase: String
+  type_not_contains: String
+  type_not_contains_nocase: String
+  type_starts_with: String
+  type_starts_with_nocase: String
+  type_not_starts_with: String
+  type_not_starts_with_nocase: String
+  type_ends_with: String
+  type_ends_with_nocase: String
+  type_not_ends_with: String
+  type_not_ends_with_nocase: String
+  value: String
+  value_not: String
+  value_gt: String
+  value_lt: String
+  value_gte: String
+  value_lte: String
+  value_in: [String!]
+  value_not_in: [String!]
+  value_contains: String
+  value_contains_nocase: String
+  value_not_contains: String
+  value_not_contains_nocase: String
+  value_starts_with: String
+  value_starts_with_nocase: String
+  value_not_starts_with: String
+  value_not_starts_with_nocase: String
+  value_ends_with: String
+  value_ends_with_nocase: String
+  value_not_ends_with: String
+  value_not_ends_with_nocase: String
+  pool: String
+  pool_not: String
+  pool_gt: String
+  pool_lt: String
+  pool_gte: String
+  pool_lte: String
+  pool_in: [String!]
+  pool_not_in: [String!]
+  pool_contains: String
+  pool_contains_nocase: String
+  pool_not_contains: String
+  pool_not_contains_nocase: String
+  pool_starts_with: String
+  pool_starts_with_nocase: String
+  pool_not_starts_with: String
+  pool_not_starts_with_nocase: String
+  pool_ends_with: String
+  pool_ends_with_nocase: String
+  pool_not_ends_with: String
+  pool_not_ends_with_nocase: String
+  pool_: QuantAMMWeightedParams_filter
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [QuantAMMWeightedDetail_filter]
+  or: [QuantAMMWeightedDetail_filter]
+}
+
+enum QuantAMMWeightedDetail_orderBy {
+  id
+  category
+  name
+  type
+  value
+  pool
+  pool__id
+  pool__oracleStalenessThreshold
+  pool__poolRegistry
+  pool__epsilonMax
+  pool__absoluteWeightGuardRail
+  pool__maxTradeSizeRatio
+  pool__updateInterval
+  pool__lastUpdateIntervalTime
+  pool__lastInterpolationTimePossible
+  pool__runner
+  pool__rule
+}
+
+type QuantAMMWeightedParams {
+  """Unique identifier for the QuantAMMWeightedParams"""
+  id: Bytes!
+
+  """Oracle staleness threshold"""
+  oracleStalenessThreshold: BigInt!
+
+  """Pool registry"""
+  poolRegistry: BigInt!
+
+  """Lambda values"""
+  lambda: [BigInt!]!
+
+  """Maximum epsilon value"""
+  epsilonMax: BigInt!
+
+  """Absolute weight guard rail"""
+  absoluteWeightGuardRail: BigInt!
+
+  """Maximum trade size ratio"""
+  maxTradeSizeRatio: BigInt!
+
+  """Update interval"""
+  updateInterval: BigInt!
+
+  """Weights at the last update interval"""
+  weightsAtLastUpdateInterval: [BigInt!]!
+
+  """Weight block multipliers"""
+  weightBlockMultipliers: [BigInt!]!
+
+  """Last update interval time"""
+  lastUpdateIntervalTime: BigInt!
+
+  """Last interpolation time possible"""
+  lastInterpolationTimePossible: BigInt!
+
+  """
+  address of UpdateWeightRunner for this pool (pool.updateWeightRunner())
+  """
+  runner: Bytes!
+
+  """address of the active rule (UpdateWeightRunner.getPoolRule(pool))"""
+  rule: Bytes!
+
+  """#int256[] from rule.getIntermediateGradientState(pool, numberOfAssets)"""
+  gradientIntermediates: [BigInt!]
+
+  """#int256[] from rule.getMovingAverages(pool, numberOfAssets)"""
+  movingAverageIntermediates: [BigInt!]
+
+  """Pool details array"""
+  details(skip: Int = 0, first: Int = 100, orderBy: QuantAMMWeightedDetail_orderBy, orderDirection: OrderDirection, where: QuantAMMWeightedDetail_filter): [QuantAMMWeightedDetail!]!
+}
+
+input QuantAMMWeightedParams_filter {
+  id: Bytes
+  id_not: Bytes
+  id_gt: Bytes
+  id_lt: Bytes
+  id_gte: Bytes
+  id_lte: Bytes
+  id_in: [Bytes!]
+  id_not_in: [Bytes!]
+  id_contains: Bytes
+  id_not_contains: Bytes
+  oracleStalenessThreshold: BigInt
+  oracleStalenessThreshold_not: BigInt
+  oracleStalenessThreshold_gt: BigInt
+  oracleStalenessThreshold_lt: BigInt
+  oracleStalenessThreshold_gte: BigInt
+  oracleStalenessThreshold_lte: BigInt
+  oracleStalenessThreshold_in: [BigInt!]
+  oracleStalenessThreshold_not_in: [BigInt!]
+  poolRegistry: BigInt
+  poolRegistry_not: BigInt
+  poolRegistry_gt: BigInt
+  poolRegistry_lt: BigInt
+  poolRegistry_gte: BigInt
+  poolRegistry_lte: BigInt
+  poolRegistry_in: [BigInt!]
+  poolRegistry_not_in: [BigInt!]
+  lambda: [BigInt!]
+  lambda_not: [BigInt!]
+  lambda_contains: [BigInt!]
+  lambda_not_contains: [BigInt!]
+  epsilonMax: BigInt
+  epsilonMax_not: BigInt
+  epsilonMax_gt: BigInt
+  epsilonMax_lt: BigInt
+  epsilonMax_gte: BigInt
+  epsilonMax_lte: BigInt
+  epsilonMax_in: [BigInt!]
+  epsilonMax_not_in: [BigInt!]
+  absoluteWeightGuardRail: BigInt
+  absoluteWeightGuardRail_not: BigInt
+  absoluteWeightGuardRail_gt: BigInt
+  absoluteWeightGuardRail_lt: BigInt
+  absoluteWeightGuardRail_gte: BigInt
+  absoluteWeightGuardRail_lte: BigInt
+  absoluteWeightGuardRail_in: [BigInt!]
+  absoluteWeightGuardRail_not_in: [BigInt!]
+  maxTradeSizeRatio: BigInt
+  maxTradeSizeRatio_not: BigInt
+  maxTradeSizeRatio_gt: BigInt
+  maxTradeSizeRatio_lt: BigInt
+  maxTradeSizeRatio_gte: BigInt
+  maxTradeSizeRatio_lte: BigInt
+  maxTradeSizeRatio_in: [BigInt!]
+  maxTradeSizeRatio_not_in: [BigInt!]
+  updateInterval: BigInt
+  updateInterval_not: BigInt
+  updateInterval_gt: BigInt
+  updateInterval_lt: BigInt
+  updateInterval_gte: BigInt
+  updateInterval_lte: BigInt
+  updateInterval_in: [BigInt!]
+  updateInterval_not_in: [BigInt!]
+  weightsAtLastUpdateInterval: [BigInt!]
+  weightsAtLastUpdateInterval_not: [BigInt!]
+  weightsAtLastUpdateInterval_contains: [BigInt!]
+  weightsAtLastUpdateInterval_not_contains: [BigInt!]
+  weightBlockMultipliers: [BigInt!]
+  weightBlockMultipliers_not: [BigInt!]
+  weightBlockMultipliers_contains: [BigInt!]
+  weightBlockMultipliers_not_contains: [BigInt!]
+  lastUpdateIntervalTime: BigInt
+  lastUpdateIntervalTime_not: BigInt
+  lastUpdateIntervalTime_gt: BigInt
+  lastUpdateIntervalTime_lt: BigInt
+  lastUpdateIntervalTime_gte: BigInt
+  lastUpdateIntervalTime_lte: BigInt
+  lastUpdateIntervalTime_in: [BigInt!]
+  lastUpdateIntervalTime_not_in: [BigInt!]
+  lastInterpolationTimePossible: BigInt
+  lastInterpolationTimePossible_not: BigInt
+  lastInterpolationTimePossible_gt: BigInt
+  lastInterpolationTimePossible_lt: BigInt
+  lastInterpolationTimePossible_gte: BigInt
+  lastInterpolationTimePossible_lte: BigInt
+  lastInterpolationTimePossible_in: [BigInt!]
+  lastInterpolationTimePossible_not_in: [BigInt!]
+  runner: Bytes
+  runner_not: Bytes
+  runner_gt: Bytes
+  runner_lt: Bytes
+  runner_gte: Bytes
+  runner_lte: Bytes
+  runner_in: [Bytes!]
+  runner_not_in: [Bytes!]
+  runner_contains: Bytes
+  runner_not_contains: Bytes
+  rule: Bytes
+  rule_not: Bytes
+  rule_gt: Bytes
+  rule_lt: Bytes
+  rule_gte: Bytes
+  rule_lte: Bytes
+  rule_in: [Bytes!]
+  rule_not_in: [Bytes!]
+  rule_contains: Bytes
+  rule_not_contains: Bytes
+  gradientIntermediates: [BigInt!]
+  gradientIntermediates_not: [BigInt!]
+  gradientIntermediates_contains: [BigInt!]
+  gradientIntermediates_not_contains: [BigInt!]
+  movingAverageIntermediates: [BigInt!]
+  movingAverageIntermediates_not: [BigInt!]
+  movingAverageIntermediates_contains: [BigInt!]
+  movingAverageIntermediates_not_contains: [BigInt!]
+  details_: QuantAMMWeightedDetail_filter
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [QuantAMMWeightedParams_filter]
+  or: [QuantAMMWeightedParams_filter]
+}
+
+enum QuantAMMWeightedParams_orderBy {
+  id
+  oracleStalenessThreshold
+  poolRegistry
+  lambda
+  epsilonMax
+  absoluteWeightGuardRail
+  maxTradeSizeRatio
+  updateInterval
+  weightsAtLastUpdateInterval
+  weightBlockMultipliers
+  lastUpdateIntervalTime
+  lastInterpolationTimePossible
+  runner
+  rule
+  gradientIntermediates
+  movingAverageIntermediates
+  details
+}
+
+type Query {
+  factory(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Factory
+  factories(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Factory_orderBy
+    orderDirection: OrderDirection
+    where: Factory_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Factory!]!
+  weightedParams(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): WeightedParams
+  weightedParams_collection(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: WeightedParams_orderBy
+    orderDirection: OrderDirection
+    where: WeightedParams_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [WeightedParams!]!
+  stableParams(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): StableParams
+  stableParams_collection(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: StableParams_orderBy
+    orderDirection: OrderDirection
+    where: StableParams_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [StableParams!]!
+  quantAMMWeightedParams(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): QuantAMMWeightedParams
+  quantAMMWeightedParams_collection(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: QuantAMMWeightedParams_orderBy
+    orderDirection: OrderDirection
+    where: QuantAMMWeightedParams_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [QuantAMMWeightedParams!]!
+  quantAMMWeightedDetail(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): QuantAMMWeightedDetail
+  quantAMMWeightedDetails(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: QuantAMMWeightedDetail_orderBy
+    orderDirection: OrderDirection
+    where: QuantAMMWeightedDetail_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [QuantAMMWeightedDetail!]!
+  stableSurgeParams(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): StableSurgeParams
+  stableSurgeParams_collection(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: StableSurgeParams_orderBy
+    orderDirection: OrderDirection
+    where: StableSurgeParams_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [StableSurgeParams!]!
+  gyro2Params(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Gyro2Params
+  gyro2Params_collection(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Gyro2Params_orderBy
+    orderDirection: OrderDirection
+    where: Gyro2Params_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Gyro2Params!]!
+  gyroEParams(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): GyroEParams
+  gyroEParams_collection(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: GyroEParams_orderBy
+    orderDirection: OrderDirection
+    where: GyroEParams_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [GyroEParams!]!
+  lbpparams(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): LBPParams
+  lbpparams_collection(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: LBPParams_orderBy
+    orderDirection: OrderDirection
+    where: LBPParams_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [LBPParams!]!
+  fixedLBPParams(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): FixedLBPParams
+  fixedLBPParams_collection(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: FixedLBPParams_orderBy
+    orderDirection: OrderDirection
+    where: FixedLBPParams_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [FixedLBPParams!]!
+  reClammParams(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): ReClammParams
+  reClammParams_collection(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: ReClammParams_orderBy
+    orderDirection: OrderDirection
+    where: ReClammParams_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [ReClammParams!]!
+  pool(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Pool
+  pools(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Pool_orderBy
+    orderDirection: OrderDirection
+    where: Pool_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Pool!]!
+
+  """Access to subgraph metadata"""
+  _meta(block: Block_height): _Meta_
+
+  """
+  Query execution logs emitted by the subgraph during indexing. Results are sorted by timestamp in descending order (newest first).
+  """
+  _logs(
+    """
+    Filter logs by severity level. Only logs at this level will be returned.
+    """
+    level: LogLevel
+
+    """
+    Filter logs from this timestamp onwards (inclusive). Must be in RFC3339 format (e.g., '2024-01-15T10:30:00Z').
+    """
+    from: String
+
+    """
+    Filter logs until this timestamp (inclusive). Must be in RFC3339 format (e.g., '2024-01-15T23:59:59Z').
+    """
+    to: String
+
+    """
+    Search for logs containing this text in the message. Case-insensitive substring match. Maximum length: 1000 characters.
+    """
+    search: String
+
+    """Maximum number of logs to return. Default: 100, Maximum: 1000."""
+    first: Int = 100
+
+    """Number of logs to skip (for pagination). Default: 0, Maximum: 10000."""
+    skip: Int = 0
+
+    """Sort direction for results. Default: desc (newest first)."""
+    orderDirection: OrderDirection = desc
+  ): [_Log_!]!
+}
+
+type ReClammParams {
+  """Unique identifier for the ReClammParams"""
+  id: Bytes!
+
+  """The timestamp of the last user interaction"""
+  lastTimestamp: BigInt!
+
+  """The last virtual balances of the pool"""
+  lastVirtualBalances: [BigInt!]!
+
+  """Represents how fast the pool can move the virtual balances per day"""
+  dailyPriceShiftExponent: BigInt!
+
+  """Internal time constant used to update virtual balances (1 - tau)"""
+  dailyPriceShiftBase: BigInt!
+
+  """The centeredness margin of the pool"""
+  centerednessMargin: BigInt!
+
+  """
+  The current fourth root price ratio, an interpolation of the price ratio state
+  """
+  currentFourthRootPriceRatio: BigInt!
+
+  """The fourth root price ratio at the start of an update"""
+  startFourthRootPriceRatio: BigInt!
+
+  """The fourth root price ratio at the end of an update"""
+  endFourthRootPriceRatio: BigInt!
+
+  """The timestamp when the update begins"""
+  priceRatioUpdateStartTime: BigInt!
+
+  """The timestamp when the update ends"""
+  priceRatioUpdateEndTime: BigInt!
+}
+
+input ReClammParams_filter {
+  id: Bytes
+  id_not: Bytes
+  id_gt: Bytes
+  id_lt: Bytes
+  id_gte: Bytes
+  id_lte: Bytes
+  id_in: [Bytes!]
+  id_not_in: [Bytes!]
+  id_contains: Bytes
+  id_not_contains: Bytes
+  lastTimestamp: BigInt
+  lastTimestamp_not: BigInt
+  lastTimestamp_gt: BigInt
+  lastTimestamp_lt: BigInt
+  lastTimestamp_gte: BigInt
+  lastTimestamp_lte: BigInt
+  lastTimestamp_in: [BigInt!]
+  lastTimestamp_not_in: [BigInt!]
+  lastVirtualBalances: [BigInt!]
+  lastVirtualBalances_not: [BigInt!]
+  lastVirtualBalances_contains: [BigInt!]
+  lastVirtualBalances_not_contains: [BigInt!]
+  dailyPriceShiftExponent: BigInt
+  dailyPriceShiftExponent_not: BigInt
+  dailyPriceShiftExponent_gt: BigInt
+  dailyPriceShiftExponent_lt: BigInt
+  dailyPriceShiftExponent_gte: BigInt
+  dailyPriceShiftExponent_lte: BigInt
+  dailyPriceShiftExponent_in: [BigInt!]
+  dailyPriceShiftExponent_not_in: [BigInt!]
+  dailyPriceShiftBase: BigInt
+  dailyPriceShiftBase_not: BigInt
+  dailyPriceShiftBase_gt: BigInt
+  dailyPriceShiftBase_lt: BigInt
+  dailyPriceShiftBase_gte: BigInt
+  dailyPriceShiftBase_lte: BigInt
+  dailyPriceShiftBase_in: [BigInt!]
+  dailyPriceShiftBase_not_in: [BigInt!]
+  centerednessMargin: BigInt
+  centerednessMargin_not: BigInt
+  centerednessMargin_gt: BigInt
+  centerednessMargin_lt: BigInt
+  centerednessMargin_gte: BigInt
+  centerednessMargin_lte: BigInt
+  centerednessMargin_in: [BigInt!]
+  centerednessMargin_not_in: [BigInt!]
+  currentFourthRootPriceRatio: BigInt
+  currentFourthRootPriceRatio_not: BigInt
+  currentFourthRootPriceRatio_gt: BigInt
+  currentFourthRootPriceRatio_lt: BigInt
+  currentFourthRootPriceRatio_gte: BigInt
+  currentFourthRootPriceRatio_lte: BigInt
+  currentFourthRootPriceRatio_in: [BigInt!]
+  currentFourthRootPriceRatio_not_in: [BigInt!]
+  startFourthRootPriceRatio: BigInt
+  startFourthRootPriceRatio_not: BigInt
+  startFourthRootPriceRatio_gt: BigInt
+  startFourthRootPriceRatio_lt: BigInt
+  startFourthRootPriceRatio_gte: BigInt
+  startFourthRootPriceRatio_lte: BigInt
+  startFourthRootPriceRatio_in: [BigInt!]
+  startFourthRootPriceRatio_not_in: [BigInt!]
+  endFourthRootPriceRatio: BigInt
+  endFourthRootPriceRatio_not: BigInt
+  endFourthRootPriceRatio_gt: BigInt
+  endFourthRootPriceRatio_lt: BigInt
+  endFourthRootPriceRatio_gte: BigInt
+  endFourthRootPriceRatio_lte: BigInt
+  endFourthRootPriceRatio_in: [BigInt!]
+  endFourthRootPriceRatio_not_in: [BigInt!]
+  priceRatioUpdateStartTime: BigInt
+  priceRatioUpdateStartTime_not: BigInt
+  priceRatioUpdateStartTime_gt: BigInt
+  priceRatioUpdateStartTime_lt: BigInt
+  priceRatioUpdateStartTime_gte: BigInt
+  priceRatioUpdateStartTime_lte: BigInt
+  priceRatioUpdateStartTime_in: [BigInt!]
+  priceRatioUpdateStartTime_not_in: [BigInt!]
+  priceRatioUpdateEndTime: BigInt
+  priceRatioUpdateEndTime_not: BigInt
+  priceRatioUpdateEndTime_gt: BigInt
+  priceRatioUpdateEndTime_lt: BigInt
+  priceRatioUpdateEndTime_gte: BigInt
+  priceRatioUpdateEndTime_lte: BigInt
+  priceRatioUpdateEndTime_in: [BigInt!]
+  priceRatioUpdateEndTime_not_in: [BigInt!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [ReClammParams_filter]
+  or: [ReClammParams_filter]
+}
+
+enum ReClammParams_orderBy {
+  id
+  lastTimestamp
+  lastVirtualBalances
+  dailyPriceShiftExponent
+  dailyPriceShiftBase
+  centerednessMargin
+  currentFourthRootPriceRatio
+  startFourthRootPriceRatio
+  endFourthRootPriceRatio
+  priceRatioUpdateStartTime
+  priceRatioUpdateEndTime
+}
+
+type StableParams {
+  """Unique identifier for the StablePoolParams"""
+  id: Bytes!
+
+  """Amplification parameter for Stable Pools"""
+  amp: BigInt!
+}
+
+input StableParams_filter {
+  id: Bytes
+  id_not: Bytes
+  id_gt: Bytes
+  id_lt: Bytes
+  id_gte: Bytes
+  id_lte: Bytes
+  id_in: [Bytes!]
+  id_not_in: [Bytes!]
+  id_contains: Bytes
+  id_not_contains: Bytes
+  amp: BigInt
+  amp_not: BigInt
+  amp_gt: BigInt
+  amp_lt: BigInt
+  amp_gte: BigInt
+  amp_lte: BigInt
+  amp_in: [BigInt!]
+  amp_not_in: [BigInt!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [StableParams_filter]
+  or: [StableParams_filter]
+}
+
+enum StableParams_orderBy {
+  id
+  amp
+}
+
+type StableSurgeParams {
+  """Unique identifier for the StableSurgeParams"""
+  id: Bytes!
+
+  """Amplification parameter"""
+  amp: BigInt!
+
+  """Maximum surge fee percentage"""
+  maxSurgeFeePercentage: BigDecimal!
+
+  """Surge threshold percentage"""
+  surgeThresholdPercentage: BigDecimal!
+}
+
+input StableSurgeParams_filter {
+  id: Bytes
+  id_not: Bytes
+  id_gt: Bytes
+  id_lt: Bytes
+  id_gte: Bytes
+  id_lte: Bytes
+  id_in: [Bytes!]
+  id_not_in: [Bytes!]
+  id_contains: Bytes
+  id_not_contains: Bytes
+  amp: BigInt
+  amp_not: BigInt
+  amp_gt: BigInt
+  amp_lt: BigInt
+  amp_gte: BigInt
+  amp_lte: BigInt
+  amp_in: [BigInt!]
+  amp_not_in: [BigInt!]
+  maxSurgeFeePercentage: BigDecimal
+  maxSurgeFeePercentage_not: BigDecimal
+  maxSurgeFeePercentage_gt: BigDecimal
+  maxSurgeFeePercentage_lt: BigDecimal
+  maxSurgeFeePercentage_gte: BigDecimal
+  maxSurgeFeePercentage_lte: BigDecimal
+  maxSurgeFeePercentage_in: [BigDecimal!]
+  maxSurgeFeePercentage_not_in: [BigDecimal!]
+  surgeThresholdPercentage: BigDecimal
+  surgeThresholdPercentage_not: BigDecimal
+  surgeThresholdPercentage_gt: BigDecimal
+  surgeThresholdPercentage_lt: BigDecimal
+  surgeThresholdPercentage_gte: BigDecimal
+  surgeThresholdPercentage_lte: BigDecimal
+  surgeThresholdPercentage_in: [BigDecimal!]
+  surgeThresholdPercentage_not_in: [BigDecimal!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [StableSurgeParams_filter]
+  or: [StableSurgeParams_filter]
+}
+
+enum StableSurgeParams_orderBy {
+  id
+  amp
+  maxSurgeFeePercentage
+  surgeThresholdPercentage
+}
+
+"""A string representation of microseconds UNIX timestamp (16 digits)"""
+scalar Timestamp
+
+type WeightedParams {
+  """Unique identifier for the WeightedPoolParams"""
+  id: Bytes!
+
+  """Token weights for Weighted Pools"""
+  weights: [BigDecimal!]!
+}
+
+input WeightedParams_filter {
+  id: Bytes
+  id_not: Bytes
+  id_gt: Bytes
+  id_lt: Bytes
+  id_gte: Bytes
+  id_lte: Bytes
+  id_in: [Bytes!]
+  id_not_in: [Bytes!]
+  id_contains: Bytes
+  id_not_contains: Bytes
+  weights: [BigDecimal!]
+  weights_not: [BigDecimal!]
+  weights_contains: [BigDecimal!]
+  weights_not_contains: [BigDecimal!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [WeightedParams_filter]
+  or: [WeightedParams_filter]
+}
+
+enum WeightedParams_orderBy {
+  id
+  weights
+}
+
+type _Block_ {
+  """The hash of the block"""
+  hash: Bytes
+
+  """The block number"""
+  number: Int!
+
+  """Integer representation of the timestamp stored in blocks for the chain"""
+  timestamp: Int
+
+  """The hash of the parent block"""
+  parentHash: Bytes
+}
+
+"""
+A key-value pair of additional data associated with a log entry.
+These correspond to arguments passed to the log function in the subgraph code.
+"""
+type _LogArgument_ {
+  """The parameter name"""
+  key: String!
+
+  """The parameter value, serialized as a string"""
+  value: String!
+}
+
+"""
+Source code location metadata for a log entry.
+Indicates where in the subgraph's AssemblyScript code the log statement was executed.
+"""
+type _LogMeta_ {
+  """The module or file path where the log was emitted"""
+  module: String!
+
+  """The line number in the source file"""
+  line: Int!
+
+  """The column number in the source file"""
+  column: Int!
+}
+
+"""
+A log entry emitted by a subgraph during indexing.
+Logs can be generated by the subgraph's AssemblyScript code using the `log.*` functions.
+"""
+type _Log_ {
+  """Unique identifier for this log entry"""
+  id: String!
+
+  """The deployment hash of the subgraph that emitted this log"""
+  subgraphId: String!
+
+  """
+  The timestamp when the log was emitted, in RFC3339 format (e.g., '2024-01-15T10:30:00Z')
+  """
+  timestamp: String!
+
+  """The severity level of the log entry"""
+  level: LogLevel!
+
+  """The log message text"""
+  text: String!
+
+  """
+  Additional structured data passed to the log function as key-value pairs
+  """
+  arguments: [_LogArgument_!]!
+
+  """
+  Metadata about the source location in the subgraph code where the log was emitted
+  """
+  meta: _LogMeta_!
+}
+
+"""The type for the top-level _meta field"""
+type _Meta_ {
+  """
+  Information about a specific subgraph block. The hash of the block
+  will be null if the _meta field has a block constraint that asks for
+  a block number. It will be filled if the _meta field has no block constraint
+  and therefore asks for the latest  block
+  """
+  block: _Block_!
+
+  """The deployment ID"""
+  deployment: String!
+
+  """If `true`, the subgraph encountered indexing errors at some past block"""
+  hasIndexingErrors: Boolean!
+}
+
+enum _SubgraphErrorPolicy_ {
+  """Data will be returned even if the subgraph has indexing errors"""
+  allow
+
+  """
+  If the subgraph has indexing errors, data will be omitted. The default.
+  """
+  deny
+}

@@ -1,0 +1,34 @@
+_Raw introspection JSON vs. SDL rendering. Baseline only — not the condenser's reduction._
+
+| Subgraph | Raw (tok) | SDL (tok) | Ratio | Reduction | Types |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| gmx-avalanche | 332,998 | 92,864 | 3.59x | 72.1% | 104 |
+| aave-v2-ethereum | 323,136 | 89,335 | 3.62x | 72.4% | 125 |
+| aave-v3-base | 323,136 | 89,335 | 3.62x | 72.4% | 125 |
+| aave-v2-polygon | 321,442 | 88,951 | 3.61x | 72.3% | 126 |
+| aave-v3-ethereum | 321,442 | 88,951 | 3.61x | 72.3% | 126 |
+| aave-v3-optimism | 321,442 | 88,951 | 3.61x | 72.3% | 126 |
+| compound-v3-ethereum | 309,031 | 84,981 | 3.64x | 72.5% | 119 |
+| compound-v3-base | 246,045 | 68,870 | 3.57x | 72.0% | 141 |
+| compound-v3-polygon | 245,684 | 68,833 | 3.57x | 72.0% | 142 |
+| pancakeswap-v3-ethereum | 221,057 | 61,512 | 3.59x | 72.2% | 98 |
+| uniswap-v3-base-alt | 221,057 | 61,512 | 3.59x | 72.2% | 98 |
+| sushiswap-v3-ethereum | 221,031 | 61,510 | 3.59x | 72.2% | 98 |
+| makerdao-protofire | 168,079 | 45,434 | 3.70x | 73.0% | 118 |
+| balancer-optimism-v2 | 167,132 | 44,316 | 3.77x | 73.5% | 99 |
+| uniswap-v3-polygon-alt | 162,122 | 40,745 | 3.98x | 74.9% | 79 |
+| uniswap-v3 | 161,647 | 40,966 | 3.95x | 74.7% | 83 |
+| curve-finance-ethereum | 140,469 | 40,289 | 3.49x | 71.3% | 82 |
+| ens-subgraph-v1 | 123,704 | 35,068 | 3.53x | 71.7% | 113 |
+| ens-subgraph-v2 | 122,146 | 34,316 | 3.56x | 71.9% | 108 |
+| sushiswap-polygon | 121,669 | 30,956 | 3.93x | 74.6% | 74 |
+| uniswap-v4-bsc | 116,543 | 28,907 | 4.03x | 75.2% | 70 |
+| uniswap-v4-base | 116,543 | 28,907 | 4.03x | 75.2% | 70 |
+| pancakeswap-v2 | 86,276 | 22,019 | 3.92x | 74.5% | 64 |
+| uniswap-v2-ethereum | 86,187 | 21,958 | 3.93x | 74.5% | 64 |
+| sushiswap-mainnet | 84,393 | 21,647 | 3.90x | 74.3% | 64 |
+| makerdao-governance | 76,646 | 20,386 | 3.76x | 73.4% | 73 |
+| lido-ethereum | 68,445 | 19,817 | 3.45x | 71.0% | 54 |
+| balancer-gauges-arbitrum | 61,461 | 17,915 | 3.43x | 70.9% | 68 |
+| balancer-v3-sonic | 59,414 | 17,191 | 3.46x | 71.1% | 60 |
+| uniswap-v4-ethereum | 7,469 | 1,846 | 4.05x | 75.3% | 22 |

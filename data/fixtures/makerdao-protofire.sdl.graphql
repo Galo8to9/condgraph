@@ -1,0 +1,5728 @@
+"""
+Marks the GraphQL type as indexable entity.  Each type that should be an entity is required to be annotated with this directive.
+"""
+directive @entity on OBJECT
+
+"""Defined a Subgraph ID for an object type"""
+directive @subgraphId(id: String!) on OBJECT
+
+"""
+creates a virtual field on the entity that may be queried but cannot be set manually through the mappings API.
+"""
+directive @derivedFrom(field: String!) on FIELD_DEFINITION
+
+enum Aggregation_interval {
+  hour
+  day
+}
+
+interface Auction {
+  """ incrementing number. Equals to the String of the Flapper#ID """
+  id: ID!
+
+  """ Bid amount in DAI """
+  bidAmount: BigInt!
+
+  """ auction quantity up for sale (lot) """
+  quantity: BigInt!
+
+  """ the highest auction bidder (guy) """
+  highestBidder: Bytes!
+
+  """ TS when the auction ends """
+  endTimeAt: BigInt!
+
+  """ TS CreatedAt (kick time) """
+  createdAt: BigInt!
+
+  """ TS modifiedAt """
+  updatedAt: BigInt!
+
+  """False if Auction was deleted """
+  active: Boolean!
+
+  """Timestamp when the auction was deleted"""
+  deletedAt: BigInt!
+}
+
+input Auction_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  bidAmount: BigInt
+  bidAmount_not: BigInt
+  bidAmount_gt: BigInt
+  bidAmount_lt: BigInt
+  bidAmount_gte: BigInt
+  bidAmount_lte: BigInt
+  bidAmount_in: [BigInt!]
+  bidAmount_not_in: [BigInt!]
+  quantity: BigInt
+  quantity_not: BigInt
+  quantity_gt: BigInt
+  quantity_lt: BigInt
+  quantity_gte: BigInt
+  quantity_lte: BigInt
+  quantity_in: [BigInt!]
+  quantity_not_in: [BigInt!]
+  highestBidder: Bytes
+  highestBidder_not: Bytes
+  highestBidder_gt: Bytes
+  highestBidder_lt: Bytes
+  highestBidder_gte: Bytes
+  highestBidder_lte: Bytes
+  highestBidder_in: [Bytes!]
+  highestBidder_not_in: [Bytes!]
+  highestBidder_contains: Bytes
+  highestBidder_not_contains: Bytes
+  endTimeAt: BigInt
+  endTimeAt_not: BigInt
+  endTimeAt_gt: BigInt
+  endTimeAt_lt: BigInt
+  endTimeAt_gte: BigInt
+  endTimeAt_lte: BigInt
+  endTimeAt_in: [BigInt!]
+  endTimeAt_not_in: [BigInt!]
+  createdAt: BigInt
+  createdAt_not: BigInt
+  createdAt_gt: BigInt
+  createdAt_lt: BigInt
+  createdAt_gte: BigInt
+  createdAt_lte: BigInt
+  createdAt_in: [BigInt!]
+  createdAt_not_in: [BigInt!]
+  updatedAt: BigInt
+  updatedAt_not: BigInt
+  updatedAt_gt: BigInt
+  updatedAt_lt: BigInt
+  updatedAt_gte: BigInt
+  updatedAt_lte: BigInt
+  updatedAt_in: [BigInt!]
+  updatedAt_not_in: [BigInt!]
+  active: Boolean
+  active_not: Boolean
+  active_in: [Boolean!]
+  active_not_in: [Boolean!]
+  deletedAt: BigInt
+  deletedAt_not: BigInt
+  deletedAt_gt: BigInt
+  deletedAt_lt: BigInt
+  deletedAt_gte: BigInt
+  deletedAt_lte: BigInt
+  deletedAt_in: [BigInt!]
+  deletedAt_not_in: [BigInt!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [Auction_filter]
+  or: [Auction_filter]
+}
+
+enum Auction_orderBy {
+  id
+  bidAmount
+  quantity
+  highestBidder
+  endTimeAt
+  createdAt
+  updatedAt
+  active
+  deletedAt
+}
+
+scalar BigDecimal
+
+scalar BigInt
+
+input BlockChangedFilter {
+  number_gte: Int!
+}
+
+input Block_height {
+  hash: Bytes
+  number: Int
+  number_gte: Int
+}
+
+scalar Bytes
+
+""" Collateral tokens (Gem)"""
+type Collateral {
+  """ Collateral tokens (Gem) : ${user.id}-${collateralType.id} """
+  id: ID!
+
+  """ Collateral type """
+  type: CollateralType!
+
+  """ Account that owns this Collateral """
+  owner: User!
+
+  """ Amount of collateral """
+  amount: BigDecimal!
+
+  """ Timestamp of the block in which this collateral was created [seconds] 
+  """
+  createdAt: BigInt
+
+  """ Block number in which this collateral was created """
+  createdAtBlock: BigInt
+
+  """ Transaction hash in which this collateral was created """
+  createdAtTransaction: Bytes
+
+  """ Timestamp of the block in which this collateral was last modified [seconds] 
+  """
+  updatedAt: BigInt
+
+  """ Block number in which this collateral was last modified """
+  updatedAtBlock: BigInt
+
+  """ Transaction hash in which this collateral was last modified """
+  updatedAtTransaction: Bytes
+
+  """ UserCollateral action history """
+  logs(skip: Int = 0, first: Int = 100, orderBy: CollateralLog_orderBy, orderDirection: OrderDirection, where: CollateralLog_filter): [CollateralLog!]
+}
+
+type CollateralChangeLog implements CollateralLog {
+  id: ID!
+  collateral: Collateral!
+  collateralBefore: BigDecimal!
+  collateralAfter: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+input CollateralChangeLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  collateral: String
+  collateral_not: String
+  collateral_gt: String
+  collateral_lt: String
+  collateral_gte: String
+  collateral_lte: String
+  collateral_in: [String!]
+  collateral_not_in: [String!]
+  collateral_contains: String
+  collateral_contains_nocase: String
+  collateral_not_contains: String
+  collateral_not_contains_nocase: String
+  collateral_starts_with: String
+  collateral_starts_with_nocase: String
+  collateral_not_starts_with: String
+  collateral_not_starts_with_nocase: String
+  collateral_ends_with: String
+  collateral_ends_with_nocase: String
+  collateral_not_ends_with: String
+  collateral_not_ends_with_nocase: String
+  collateral_: Collateral_filter
+  collateralBefore: BigDecimal
+  collateralBefore_not: BigDecimal
+  collateralBefore_gt: BigDecimal
+  collateralBefore_lt: BigDecimal
+  collateralBefore_gte: BigDecimal
+  collateralBefore_lte: BigDecimal
+  collateralBefore_in: [BigDecimal!]
+  collateralBefore_not_in: [BigDecimal!]
+  collateralAfter: BigDecimal
+  collateralAfter_not: BigDecimal
+  collateralAfter_gt: BigDecimal
+  collateralAfter_lt: BigDecimal
+  collateralAfter_gte: BigDecimal
+  collateralAfter_lte: BigDecimal
+  collateralAfter_in: [BigDecimal!]
+  collateralAfter_not_in: [BigDecimal!]
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [CollateralChangeLog_filter]
+  or: [CollateralChangeLog_filter]
+}
+
+enum CollateralChangeLog_orderBy {
+  id
+  collateral
+  collateral__id
+  collateral__amount
+  collateral__createdAt
+  collateral__createdAtBlock
+  collateral__createdAtTransaction
+  collateral__updatedAt
+  collateral__updatedAtBlock
+  collateral__updatedAtTransaction
+  collateralBefore
+  collateralAfter
+  block
+  timestamp
+  transaction
+}
+
+interface CollateralLog {
+  id: ID!
+  collateral: Collateral!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+input CollateralLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  collateral: String
+  collateral_not: String
+  collateral_gt: String
+  collateral_lt: String
+  collateral_gte: String
+  collateral_lte: String
+  collateral_in: [String!]
+  collateral_not_in: [String!]
+  collateral_contains: String
+  collateral_contains_nocase: String
+  collateral_not_contains: String
+  collateral_not_contains_nocase: String
+  collateral_starts_with: String
+  collateral_starts_with_nocase: String
+  collateral_not_starts_with: String
+  collateral_not_starts_with_nocase: String
+  collateral_ends_with: String
+  collateral_ends_with_nocase: String
+  collateral_not_ends_with: String
+  collateral_not_ends_with_nocase: String
+  collateral_: Collateral_filter
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [CollateralLog_filter]
+  or: [CollateralLog_filter]
+}
+
+enum CollateralLog_orderBy {
+  id
+  collateral
+  collateral__id
+  collateral__amount
+  collateral__createdAt
+  collateral__createdAtBlock
+  collateral__createdAtTransaction
+  collateral__updatedAt
+  collateral__updatedAtBlock
+  collateral__updatedAtTransaction
+  block
+  timestamp
+  transaction
+}
+
+""" Collateral market price at a given block """
+type CollateralPrice {
+  """ Equals to: <block_number>-<ilk>"""
+  id: ID!
+
+  """ Block number """
+  block: BigInt!
+
+  """ Collateral type """
+  collateral: CollateralType!
+
+  """ Market price with safety margin (current price less liquidation ratio) [USD] (spot) 
+  """
+  spotPrice: BigDecimal!
+
+  """ Timestamp in seconds """
+  timestamp: BigInt!
+
+  """ Price value """
+  value: BigDecimal!
+}
+
+type CollateralPriceUpdateLog implements CollateralLog {
+  id: ID!
+  collateral: Collateral!
+  newValue: BigDecimal!
+  newSpotPrice: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+input CollateralPriceUpdateLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  collateral: String
+  collateral_not: String
+  collateral_gt: String
+  collateral_lt: String
+  collateral_gte: String
+  collateral_lte: String
+  collateral_in: [String!]
+  collateral_not_in: [String!]
+  collateral_contains: String
+  collateral_contains_nocase: String
+  collateral_not_contains: String
+  collateral_not_contains_nocase: String
+  collateral_starts_with: String
+  collateral_starts_with_nocase: String
+  collateral_not_starts_with: String
+  collateral_not_starts_with_nocase: String
+  collateral_ends_with: String
+  collateral_ends_with_nocase: String
+  collateral_not_ends_with: String
+  collateral_not_ends_with_nocase: String
+  collateral_: Collateral_filter
+  newValue: BigDecimal
+  newValue_not: BigDecimal
+  newValue_gt: BigDecimal
+  newValue_lt: BigDecimal
+  newValue_gte: BigDecimal
+  newValue_lte: BigDecimal
+  newValue_in: [BigDecimal!]
+  newValue_not_in: [BigDecimal!]
+  newSpotPrice: BigDecimal
+  newSpotPrice_not: BigDecimal
+  newSpotPrice_gt: BigDecimal
+  newSpotPrice_lt: BigDecimal
+  newSpotPrice_gte: BigDecimal
+  newSpotPrice_lte: BigDecimal
+  newSpotPrice_in: [BigDecimal!]
+  newSpotPrice_not_in: [BigDecimal!]
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [CollateralPriceUpdateLog_filter]
+  or: [CollateralPriceUpdateLog_filter]
+}
+
+enum CollateralPriceUpdateLog_orderBy {
+  id
+  collateral
+  collateral__id
+  collateral__amount
+  collateral__createdAt
+  collateral__createdAtBlock
+  collateral__createdAtTransaction
+  collateral__updatedAt
+  collateral__updatedAtBlock
+  collateral__updatedAtTransaction
+  newValue
+  newSpotPrice
+  block
+  timestamp
+  transaction
+}
+
+input CollateralPrice_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  collateral: String
+  collateral_not: String
+  collateral_gt: String
+  collateral_lt: String
+  collateral_gte: String
+  collateral_lte: String
+  collateral_in: [String!]
+  collateral_not_in: [String!]
+  collateral_contains: String
+  collateral_contains_nocase: String
+  collateral_not_contains: String
+  collateral_not_contains_nocase: String
+  collateral_starts_with: String
+  collateral_starts_with_nocase: String
+  collateral_not_starts_with: String
+  collateral_not_starts_with_nocase: String
+  collateral_ends_with: String
+  collateral_ends_with_nocase: String
+  collateral_not_ends_with: String
+  collateral_not_ends_with_nocase: String
+  collateral_: CollateralType_filter
+  spotPrice: BigDecimal
+  spotPrice_not: BigDecimal
+  spotPrice_gt: BigDecimal
+  spotPrice_lt: BigDecimal
+  spotPrice_gte: BigDecimal
+  spotPrice_lte: BigDecimal
+  spotPrice_in: [BigDecimal!]
+  spotPrice_not_in: [BigDecimal!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  value: BigDecimal
+  value_not: BigDecimal
+  value_gt: BigDecimal
+  value_lt: BigDecimal
+  value_gte: BigDecimal
+  value_lte: BigDecimal
+  value_in: [BigDecimal!]
+  value_not_in: [BigDecimal!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [CollateralPrice_filter]
+  or: [CollateralPrice_filter]
+}
+
+enum CollateralPrice_orderBy {
+  id
+  block
+  collateral
+  collateral__id
+  collateral__debtCeiling
+  collateral__debtNormalized
+  collateral__rate
+  collateral__totalCollateral
+  collateral__totalDebt
+  collateral__liquidationLotSize
+  collateral__liquidationPenalty
+  collateral__liquidationRatio
+  collateral__daiAmountToCoverDebtAndFees
+  collateral__maxDaiToCoverAuction
+  collateral__liquidatorAddress
+  collateral__stabilityFee
+  collateral__stabilityFeeUpdatedAt
+  collateral__vaultDebtFloor
+  collateral__vaultCount
+  collateral__unmanagedVaultCount
+  collateral__addedAt
+  collateral__addedAtBlock
+  collateral__addedAtTransaction
+  collateral__updatedAt
+  collateral__updatedAtBlock
+  collateral__updatedAtTransaction
+  spotPrice
+  timestamp
+  value
+}
+
+type CollateralTransferLog implements CollateralLog {
+  id: ID!
+  src: Bytes!
+  dst: Bytes!
+  amount: BigDecimal!
+  collateral: Collateral!
+  direction: Direction!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+input CollateralTransferLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  src: Bytes
+  src_not: Bytes
+  src_gt: Bytes
+  src_lt: Bytes
+  src_gte: Bytes
+  src_lte: Bytes
+  src_in: [Bytes!]
+  src_not_in: [Bytes!]
+  src_contains: Bytes
+  src_not_contains: Bytes
+  dst: Bytes
+  dst_not: Bytes
+  dst_gt: Bytes
+  dst_lt: Bytes
+  dst_gte: Bytes
+  dst_lte: Bytes
+  dst_in: [Bytes!]
+  dst_not_in: [Bytes!]
+  dst_contains: Bytes
+  dst_not_contains: Bytes
+  amount: BigDecimal
+  amount_not: BigDecimal
+  amount_gt: BigDecimal
+  amount_lt: BigDecimal
+  amount_gte: BigDecimal
+  amount_lte: BigDecimal
+  amount_in: [BigDecimal!]
+  amount_not_in: [BigDecimal!]
+  collateral: String
+  collateral_not: String
+  collateral_gt: String
+  collateral_lt: String
+  collateral_gte: String
+  collateral_lte: String
+  collateral_in: [String!]
+  collateral_not_in: [String!]
+  collateral_contains: String
+  collateral_contains_nocase: String
+  collateral_not_contains: String
+  collateral_not_contains_nocase: String
+  collateral_starts_with: String
+  collateral_starts_with_nocase: String
+  collateral_not_starts_with: String
+  collateral_not_starts_with_nocase: String
+  collateral_ends_with: String
+  collateral_ends_with_nocase: String
+  collateral_not_ends_with: String
+  collateral_not_ends_with_nocase: String
+  collateral_: Collateral_filter
+  direction: Direction
+  direction_not: Direction
+  direction_in: [Direction!]
+  direction_not_in: [Direction!]
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [CollateralTransferLog_filter]
+  or: [CollateralTransferLog_filter]
+}
+
+enum CollateralTransferLog_orderBy {
+  id
+  src
+  dst
+  amount
+  collateral
+  collateral__id
+  collateral__amount
+  collateral__createdAt
+  collateral__createdAtBlock
+  collateral__createdAtTransaction
+  collateral__updatedAt
+  collateral__updatedAtBlock
+  collateral__updatedAtTransaction
+  direction
+  block
+  timestamp
+  transaction
+}
+
+""" Particular collateral type registered in the system (Ilk) """
+type CollateralType {
+  """ Collateral type name """
+  id: ID!
+
+  """ Debt ceiling [DAI] (line) """
+  debtCeiling: BigDecimal!
+
+  """ Debt backed by this collateral type [DAI] (Art)"""
+  debtNormalized: BigDecimal!
+
+  """ Asset/DAI exchange rate (rate) """
+  rate: BigDecimal!
+
+  """ Total assets locked as collateral"""
+  totalCollateral: BigDecimal!
+
+  """ Total debt backed by this collateral type [DAI] (Ilk.Art * rate)"""
+  totalDebt: BigDecimal!
+
+  """ Maximum size of collateral that can be auctioned at once (lump) """
+  liquidationLotSize: BigDecimal!
+
+  """ Liquidation penalty (chop [wad]) """
+  liquidationPenalty: BigDecimal!
+
+  """ Min collateralization ratio """
+  liquidationRatio: BigDecimal!
+
+  """ Amt DAI needed to cover debt+fees of active auctions per ilk [rad] """
+  daiAmountToCoverDebtAndFees: BigDecimal!
+
+  """ Max DAI needed to cover debt+fees of active auctions per ilk [rad] (hole)
+  """
+  maxDaiToCoverAuction: BigDecimal!
+
+  """ The address of the Liquidator (clip)"""
+  liquidatorAddress: Bytes!
+
+  """ Stability fee rate per second """
+  stabilityFee: BigDecimal!
+  stabilityFeeUpdatedAt: BigInt!
+
+  """ Collateral auctions for this collateral type """
+  vaults(skip: Int = 0, first: Int = 100, orderBy: Vault_orderBy, orderDirection: OrderDirection, where: Vault_filter): [Vault!]
+
+  """ Min debt per vault [DAI] (dust) """
+  vaultDebtFloor: BigDecimal!
+
+  """ Number of vaults opened through the manager (CdpManager) """
+  vaultCount: BigInt!
+
+  """ Number of vaults NOT opened through the manager (CdpManager) """
+  unmanagedVaultCount: BigInt!
+
+  """ Sale auctions for the collateral type """
+  saleAuctions(skip: Int = 0, first: Int = 100, orderBy: SaleAuction_orderBy, orderDirection: OrderDirection, where: SaleAuction_filter): [SaleAuction!]
+
+  """ Current market price [USD] """
+  price: CollateralPrice
+
+  """ Price history """
+  prices(skip: Int = 0, first: Int = 100, orderBy: CollateralPrice_orderBy, orderDirection: OrderDirection, where: CollateralPrice_filter): [CollateralPrice!]
+
+  """ Timestamp of the block in which this collateral type was added [seconds] 
+  """
+  addedAt: BigInt!
+
+  """ Block number in which this collateral type was added """
+  addedAtBlock: BigInt!
+
+  """ Transaction hash in which this collateral type was added """
+  addedAtTransaction: Bytes!
+
+  """ Timestamp of the block in which this collateral type was last modified [seconds] 
+  """
+  updatedAt: BigInt
+
+  """ Block number in which this collateral type was last modified """
+  updatedAtBlock: BigInt
+
+  """ Transaction hash in which this collateral type was last modified """
+  updatedAtTransaction: Bytes
+}
+
+input CollateralType_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  debtCeiling: BigDecimal
+  debtCeiling_not: BigDecimal
+  debtCeiling_gt: BigDecimal
+  debtCeiling_lt: BigDecimal
+  debtCeiling_gte: BigDecimal
+  debtCeiling_lte: BigDecimal
+  debtCeiling_in: [BigDecimal!]
+  debtCeiling_not_in: [BigDecimal!]
+  debtNormalized: BigDecimal
+  debtNormalized_not: BigDecimal
+  debtNormalized_gt: BigDecimal
+  debtNormalized_lt: BigDecimal
+  debtNormalized_gte: BigDecimal
+  debtNormalized_lte: BigDecimal
+  debtNormalized_in: [BigDecimal!]
+  debtNormalized_not_in: [BigDecimal!]
+  rate: BigDecimal
+  rate_not: BigDecimal
+  rate_gt: BigDecimal
+  rate_lt: BigDecimal
+  rate_gte: BigDecimal
+  rate_lte: BigDecimal
+  rate_in: [BigDecimal!]
+  rate_not_in: [BigDecimal!]
+  totalCollateral: BigDecimal
+  totalCollateral_not: BigDecimal
+  totalCollateral_gt: BigDecimal
+  totalCollateral_lt: BigDecimal
+  totalCollateral_gte: BigDecimal
+  totalCollateral_lte: BigDecimal
+  totalCollateral_in: [BigDecimal!]
+  totalCollateral_not_in: [BigDecimal!]
+  totalDebt: BigDecimal
+  totalDebt_not: BigDecimal
+  totalDebt_gt: BigDecimal
+  totalDebt_lt: BigDecimal
+  totalDebt_gte: BigDecimal
+  totalDebt_lte: BigDecimal
+  totalDebt_in: [BigDecimal!]
+  totalDebt_not_in: [BigDecimal!]
+  liquidationLotSize: BigDecimal
+  liquidationLotSize_not: BigDecimal
+  liquidationLotSize_gt: BigDecimal
+  liquidationLotSize_lt: BigDecimal
+  liquidationLotSize_gte: BigDecimal
+  liquidationLotSize_lte: BigDecimal
+  liquidationLotSize_in: [BigDecimal!]
+  liquidationLotSize_not_in: [BigDecimal!]
+  liquidationPenalty: BigDecimal
+  liquidationPenalty_not: BigDecimal
+  liquidationPenalty_gt: BigDecimal
+  liquidationPenalty_lt: BigDecimal
+  liquidationPenalty_gte: BigDecimal
+  liquidationPenalty_lte: BigDecimal
+  liquidationPenalty_in: [BigDecimal!]
+  liquidationPenalty_not_in: [BigDecimal!]
+  liquidationRatio: BigDecimal
+  liquidationRatio_not: BigDecimal
+  liquidationRatio_gt: BigDecimal
+  liquidationRatio_lt: BigDecimal
+  liquidationRatio_gte: BigDecimal
+  liquidationRatio_lte: BigDecimal
+  liquidationRatio_in: [BigDecimal!]
+  liquidationRatio_not_in: [BigDecimal!]
+  daiAmountToCoverDebtAndFees: BigDecimal
+  daiAmountToCoverDebtAndFees_not: BigDecimal
+  daiAmountToCoverDebtAndFees_gt: BigDecimal
+  daiAmountToCoverDebtAndFees_lt: BigDecimal
+  daiAmountToCoverDebtAndFees_gte: BigDecimal
+  daiAmountToCoverDebtAndFees_lte: BigDecimal
+  daiAmountToCoverDebtAndFees_in: [BigDecimal!]
+  daiAmountToCoverDebtAndFees_not_in: [BigDecimal!]
+  maxDaiToCoverAuction: BigDecimal
+  maxDaiToCoverAuction_not: BigDecimal
+  maxDaiToCoverAuction_gt: BigDecimal
+  maxDaiToCoverAuction_lt: BigDecimal
+  maxDaiToCoverAuction_gte: BigDecimal
+  maxDaiToCoverAuction_lte: BigDecimal
+  maxDaiToCoverAuction_in: [BigDecimal!]
+  maxDaiToCoverAuction_not_in: [BigDecimal!]
+  liquidatorAddress: Bytes
+  liquidatorAddress_not: Bytes
+  liquidatorAddress_gt: Bytes
+  liquidatorAddress_lt: Bytes
+  liquidatorAddress_gte: Bytes
+  liquidatorAddress_lte: Bytes
+  liquidatorAddress_in: [Bytes!]
+  liquidatorAddress_not_in: [Bytes!]
+  liquidatorAddress_contains: Bytes
+  liquidatorAddress_not_contains: Bytes
+  stabilityFee: BigDecimal
+  stabilityFee_not: BigDecimal
+  stabilityFee_gt: BigDecimal
+  stabilityFee_lt: BigDecimal
+  stabilityFee_gte: BigDecimal
+  stabilityFee_lte: BigDecimal
+  stabilityFee_in: [BigDecimal!]
+  stabilityFee_not_in: [BigDecimal!]
+  stabilityFeeUpdatedAt: BigInt
+  stabilityFeeUpdatedAt_not: BigInt
+  stabilityFeeUpdatedAt_gt: BigInt
+  stabilityFeeUpdatedAt_lt: BigInt
+  stabilityFeeUpdatedAt_gte: BigInt
+  stabilityFeeUpdatedAt_lte: BigInt
+  stabilityFeeUpdatedAt_in: [BigInt!]
+  stabilityFeeUpdatedAt_not_in: [BigInt!]
+  vaults_: Vault_filter
+  vaultDebtFloor: BigDecimal
+  vaultDebtFloor_not: BigDecimal
+  vaultDebtFloor_gt: BigDecimal
+  vaultDebtFloor_lt: BigDecimal
+  vaultDebtFloor_gte: BigDecimal
+  vaultDebtFloor_lte: BigDecimal
+  vaultDebtFloor_in: [BigDecimal!]
+  vaultDebtFloor_not_in: [BigDecimal!]
+  vaultCount: BigInt
+  vaultCount_not: BigInt
+  vaultCount_gt: BigInt
+  vaultCount_lt: BigInt
+  vaultCount_gte: BigInt
+  vaultCount_lte: BigInt
+  vaultCount_in: [BigInt!]
+  vaultCount_not_in: [BigInt!]
+  unmanagedVaultCount: BigInt
+  unmanagedVaultCount_not: BigInt
+  unmanagedVaultCount_gt: BigInt
+  unmanagedVaultCount_lt: BigInt
+  unmanagedVaultCount_gte: BigInt
+  unmanagedVaultCount_lte: BigInt
+  unmanagedVaultCount_in: [BigInt!]
+  unmanagedVaultCount_not_in: [BigInt!]
+  saleAuctions_: SaleAuction_filter
+  price: String
+  price_not: String
+  price_gt: String
+  price_lt: String
+  price_gte: String
+  price_lte: String
+  price_in: [String!]
+  price_not_in: [String!]
+  price_contains: String
+  price_contains_nocase: String
+  price_not_contains: String
+  price_not_contains_nocase: String
+  price_starts_with: String
+  price_starts_with_nocase: String
+  price_not_starts_with: String
+  price_not_starts_with_nocase: String
+  price_ends_with: String
+  price_ends_with_nocase: String
+  price_not_ends_with: String
+  price_not_ends_with_nocase: String
+  price_: CollateralPrice_filter
+  prices_: CollateralPrice_filter
+  addedAt: BigInt
+  addedAt_not: BigInt
+  addedAt_gt: BigInt
+  addedAt_lt: BigInt
+  addedAt_gte: BigInt
+  addedAt_lte: BigInt
+  addedAt_in: [BigInt!]
+  addedAt_not_in: [BigInt!]
+  addedAtBlock: BigInt
+  addedAtBlock_not: BigInt
+  addedAtBlock_gt: BigInt
+  addedAtBlock_lt: BigInt
+  addedAtBlock_gte: BigInt
+  addedAtBlock_lte: BigInt
+  addedAtBlock_in: [BigInt!]
+  addedAtBlock_not_in: [BigInt!]
+  addedAtTransaction: Bytes
+  addedAtTransaction_not: Bytes
+  addedAtTransaction_gt: Bytes
+  addedAtTransaction_lt: Bytes
+  addedAtTransaction_gte: Bytes
+  addedAtTransaction_lte: Bytes
+  addedAtTransaction_in: [Bytes!]
+  addedAtTransaction_not_in: [Bytes!]
+  addedAtTransaction_contains: Bytes
+  addedAtTransaction_not_contains: Bytes
+  updatedAt: BigInt
+  updatedAt_not: BigInt
+  updatedAt_gt: BigInt
+  updatedAt_lt: BigInt
+  updatedAt_gte: BigInt
+  updatedAt_lte: BigInt
+  updatedAt_in: [BigInt!]
+  updatedAt_not_in: [BigInt!]
+  updatedAtBlock: BigInt
+  updatedAtBlock_not: BigInt
+  updatedAtBlock_gt: BigInt
+  updatedAtBlock_lt: BigInt
+  updatedAtBlock_gte: BigInt
+  updatedAtBlock_lte: BigInt
+  updatedAtBlock_in: [BigInt!]
+  updatedAtBlock_not_in: [BigInt!]
+  updatedAtTransaction: Bytes
+  updatedAtTransaction_not: Bytes
+  updatedAtTransaction_gt: Bytes
+  updatedAtTransaction_lt: Bytes
+  updatedAtTransaction_gte: Bytes
+  updatedAtTransaction_lte: Bytes
+  updatedAtTransaction_in: [Bytes!]
+  updatedAtTransaction_not_in: [Bytes!]
+  updatedAtTransaction_contains: Bytes
+  updatedAtTransaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [CollateralType_filter]
+  or: [CollateralType_filter]
+}
+
+enum CollateralType_orderBy {
+  id
+  debtCeiling
+  debtNormalized
+  rate
+  totalCollateral
+  totalDebt
+  liquidationLotSize
+  liquidationPenalty
+  liquidationRatio
+  daiAmountToCoverDebtAndFees
+  maxDaiToCoverAuction
+  liquidatorAddress
+  stabilityFee
+  stabilityFeeUpdatedAt
+  vaults
+  vaultDebtFloor
+  vaultCount
+  unmanagedVaultCount
+  saleAuctions
+  price
+  price__id
+  price__block
+  price__spotPrice
+  price__timestamp
+  price__value
+  prices
+  addedAt
+  addedAtBlock
+  addedAtTransaction
+  updatedAt
+  updatedAtBlock
+  updatedAtTransaction
+}
+
+input Collateral_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  type: String
+  type_not: String
+  type_gt: String
+  type_lt: String
+  type_gte: String
+  type_lte: String
+  type_in: [String!]
+  type_not_in: [String!]
+  type_contains: String
+  type_contains_nocase: String
+  type_not_contains: String
+  type_not_contains_nocase: String
+  type_starts_with: String
+  type_starts_with_nocase: String
+  type_not_starts_with: String
+  type_not_starts_with_nocase: String
+  type_ends_with: String
+  type_ends_with_nocase: String
+  type_not_ends_with: String
+  type_not_ends_with_nocase: String
+  type_: CollateralType_filter
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
+  owner_: User_filter
+  amount: BigDecimal
+  amount_not: BigDecimal
+  amount_gt: BigDecimal
+  amount_lt: BigDecimal
+  amount_gte: BigDecimal
+  amount_lte: BigDecimal
+  amount_in: [BigDecimal!]
+  amount_not_in: [BigDecimal!]
+  createdAt: BigInt
+  createdAt_not: BigInt
+  createdAt_gt: BigInt
+  createdAt_lt: BigInt
+  createdAt_gte: BigInt
+  createdAt_lte: BigInt
+  createdAt_in: [BigInt!]
+  createdAt_not_in: [BigInt!]
+  createdAtBlock: BigInt
+  createdAtBlock_not: BigInt
+  createdAtBlock_gt: BigInt
+  createdAtBlock_lt: BigInt
+  createdAtBlock_gte: BigInt
+  createdAtBlock_lte: BigInt
+  createdAtBlock_in: [BigInt!]
+  createdAtBlock_not_in: [BigInt!]
+  createdAtTransaction: Bytes
+  createdAtTransaction_not: Bytes
+  createdAtTransaction_gt: Bytes
+  createdAtTransaction_lt: Bytes
+  createdAtTransaction_gte: Bytes
+  createdAtTransaction_lte: Bytes
+  createdAtTransaction_in: [Bytes!]
+  createdAtTransaction_not_in: [Bytes!]
+  createdAtTransaction_contains: Bytes
+  createdAtTransaction_not_contains: Bytes
+  updatedAt: BigInt
+  updatedAt_not: BigInt
+  updatedAt_gt: BigInt
+  updatedAt_lt: BigInt
+  updatedAt_gte: BigInt
+  updatedAt_lte: BigInt
+  updatedAt_in: [BigInt!]
+  updatedAt_not_in: [BigInt!]
+  updatedAtBlock: BigInt
+  updatedAtBlock_not: BigInt
+  updatedAtBlock_gt: BigInt
+  updatedAtBlock_lt: BigInt
+  updatedAtBlock_gte: BigInt
+  updatedAtBlock_lte: BigInt
+  updatedAtBlock_in: [BigInt!]
+  updatedAtBlock_not_in: [BigInt!]
+  updatedAtTransaction: Bytes
+  updatedAtTransaction_not: Bytes
+  updatedAtTransaction_gt: Bytes
+  updatedAtTransaction_lt: Bytes
+  updatedAtTransaction_gte: Bytes
+  updatedAtTransaction_lte: Bytes
+  updatedAtTransaction_in: [Bytes!]
+  updatedAtTransaction_not_in: [Bytes!]
+  updatedAtTransaction_contains: Bytes
+  updatedAtTransaction_not_contains: Bytes
+  logs_: CollateralLog_filter
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [Collateral_filter]
+  or: [Collateral_filter]
+}
+
+enum Collateral_orderBy {
+  id
+  type
+  type__id
+  type__debtCeiling
+  type__debtNormalized
+  type__rate
+  type__totalCollateral
+  type__totalDebt
+  type__liquidationLotSize
+  type__liquidationPenalty
+  type__liquidationRatio
+  type__daiAmountToCoverDebtAndFees
+  type__maxDaiToCoverAuction
+  type__liquidatorAddress
+  type__stabilityFee
+  type__stabilityFeeUpdatedAt
+  type__vaultDebtFloor
+  type__vaultCount
+  type__unmanagedVaultCount
+  type__addedAt
+  type__addedAtBlock
+  type__addedAtTransaction
+  type__updatedAt
+  type__updatedAtBlock
+  type__updatedAtTransaction
+  owner
+  owner__id
+  owner__address
+  owner__totalVaultDai
+  owner__totalDaiBalance
+  owner__savings
+  owner__totalMkrBalance
+  owner__proxyCount
+  owner__vaultCount
+  amount
+  createdAt
+  createdAtBlock
+  createdAtTransaction
+  updatedAt
+  updatedAtBlock
+  updatedAtTransaction
+  logs
+}
+
+type DaiApproval {
+  id: ID!
+
+  """ User account sender """
+  owner: User!
+
+  """ User account authorized to spend DAI """
+  spender: User!
+
+  """ Amount of DAI approved """
+  amount: BigDecimal!
+
+  """ Timestamp of the approval """
+  createdAt: BigInt!
+
+  """ Timestamp of the update approval """
+  updatedAt: BigInt!
+}
+
+input DaiApproval_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
+  owner_: User_filter
+  spender: String
+  spender_not: String
+  spender_gt: String
+  spender_lt: String
+  spender_gte: String
+  spender_lte: String
+  spender_in: [String!]
+  spender_not_in: [String!]
+  spender_contains: String
+  spender_contains_nocase: String
+  spender_not_contains: String
+  spender_not_contains_nocase: String
+  spender_starts_with: String
+  spender_starts_with_nocase: String
+  spender_not_starts_with: String
+  spender_not_starts_with_nocase: String
+  spender_ends_with: String
+  spender_ends_with_nocase: String
+  spender_not_ends_with: String
+  spender_not_ends_with_nocase: String
+  spender_: User_filter
+  amount: BigDecimal
+  amount_not: BigDecimal
+  amount_gt: BigDecimal
+  amount_lt: BigDecimal
+  amount_gte: BigDecimal
+  amount_lte: BigDecimal
+  amount_in: [BigDecimal!]
+  amount_not_in: [BigDecimal!]
+  createdAt: BigInt
+  createdAt_not: BigInt
+  createdAt_gt: BigInt
+  createdAt_lt: BigInt
+  createdAt_gte: BigInt
+  createdAt_lte: BigInt
+  createdAt_in: [BigInt!]
+  createdAt_not_in: [BigInt!]
+  updatedAt: BigInt
+  updatedAt_not: BigInt
+  updatedAt_gt: BigInt
+  updatedAt_lt: BigInt
+  updatedAt_gte: BigInt
+  updatedAt_lte: BigInt
+  updatedAt_in: [BigInt!]
+  updatedAt_not_in: [BigInt!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [DaiApproval_filter]
+  or: [DaiApproval_filter]
+}
+
+enum DaiApproval_orderBy {
+  id
+  owner
+  owner__id
+  owner__address
+  owner__totalVaultDai
+  owner__totalDaiBalance
+  owner__savings
+  owner__totalMkrBalance
+  owner__proxyCount
+  owner__vaultCount
+  spender
+  spender__id
+  spender__address
+  spender__totalVaultDai
+  spender__totalDaiBalance
+  spender__savings
+  spender__totalMkrBalance
+  spender__proxyCount
+  spender__vaultCount
+  amount
+  createdAt
+  updatedAt
+}
+
+type DaiMoveLog {
+  id: ID!
+  src: Bytes!
+  dst: Bytes!
+  amount: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+input DaiMoveLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  src: Bytes
+  src_not: Bytes
+  src_gt: Bytes
+  src_lt: Bytes
+  src_gte: Bytes
+  src_lte: Bytes
+  src_in: [Bytes!]
+  src_not_in: [Bytes!]
+  src_contains: Bytes
+  src_not_contains: Bytes
+  dst: Bytes
+  dst_not: Bytes
+  dst_gt: Bytes
+  dst_lt: Bytes
+  dst_gte: Bytes
+  dst_lte: Bytes
+  dst_in: [Bytes!]
+  dst_not_in: [Bytes!]
+  dst_contains: Bytes
+  dst_not_contains: Bytes
+  amount: BigDecimal
+  amount_not: BigDecimal
+  amount_gt: BigDecimal
+  amount_lt: BigDecimal
+  amount_gte: BigDecimal
+  amount_lte: BigDecimal
+  amount_in: [BigDecimal!]
+  amount_not_in: [BigDecimal!]
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [DaiMoveLog_filter]
+  or: [DaiMoveLog_filter]
+}
+
+enum DaiMoveLog_orderBy {
+  id
+  src
+  dst
+  amount
+  block
+  timestamp
+  transaction
+}
+
+type DaiTransfer {
+  """ Equals to: <transaction.hash>-<event.logindex>"""
+  id: ID!
+  block: BigInt!
+  transaction: Bytes!
+
+  """ timestamp of the transfer """
+  timestamp: BigInt!
+
+  """ User of the sender """
+  src: User!
+
+  """ User of the receiver """
+  dst: User!
+
+  """ Amount of DAI transferred """
+  amount: BigDecimal!
+}
+
+input DaiTransfer_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  src: String
+  src_not: String
+  src_gt: String
+  src_lt: String
+  src_gte: String
+  src_lte: String
+  src_in: [String!]
+  src_not_in: [String!]
+  src_contains: String
+  src_contains_nocase: String
+  src_not_contains: String
+  src_not_contains_nocase: String
+  src_starts_with: String
+  src_starts_with_nocase: String
+  src_not_starts_with: String
+  src_not_starts_with_nocase: String
+  src_ends_with: String
+  src_ends_with_nocase: String
+  src_not_ends_with: String
+  src_not_ends_with_nocase: String
+  src_: User_filter
+  dst: String
+  dst_not: String
+  dst_gt: String
+  dst_lt: String
+  dst_gte: String
+  dst_lte: String
+  dst_in: [String!]
+  dst_not_in: [String!]
+  dst_contains: String
+  dst_contains_nocase: String
+  dst_not_contains: String
+  dst_not_contains_nocase: String
+  dst_starts_with: String
+  dst_starts_with_nocase: String
+  dst_not_starts_with: String
+  dst_not_starts_with_nocase: String
+  dst_ends_with: String
+  dst_ends_with_nocase: String
+  dst_not_ends_with: String
+  dst_not_ends_with_nocase: String
+  dst_: User_filter
+  amount: BigDecimal
+  amount_not: BigDecimal
+  amount_gt: BigDecimal
+  amount_lt: BigDecimal
+  amount_gte: BigDecimal
+  amount_lte: BigDecimal
+  amount_in: [BigDecimal!]
+  amount_not_in: [BigDecimal!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [DaiTransfer_filter]
+  or: [DaiTransfer_filter]
+}
+
+enum DaiTransfer_orderBy {
+  id
+  block
+  transaction
+  timestamp
+  src
+  src__id
+  src__address
+  src__totalVaultDai
+  src__totalDaiBalance
+  src__savings
+  src__totalMkrBalance
+  src__proxyCount
+  src__vaultCount
+  dst
+  dst__id
+  dst__address
+  dst__totalVaultDai
+  dst__totalDaiBalance
+  dst__savings
+  dst__totalMkrBalance
+  dst__proxyCount
+  dst__vaultCount
+  amount
+}
+
+type DebtAuction implements Auction {
+  """ incrementing number. Equals to the String of the Flopper#ID """
+  id: ID!
+
+  """ Bid amount in DAI """
+  bidAmount: BigInt!
+
+  """ auction quantity up for sale (lot) """
+  quantity: BigInt!
+
+  """ the highest auction bidder (guy) """
+  highestBidder: Bytes!
+
+  """ TS when the auction ends """
+  endTimeAt: BigInt!
+
+  """ TS CreatedAt (kick time) """
+  createdAt: BigInt!
+
+  """ TS modifiedAt """
+  updatedAt: BigInt!
+
+  """False if Auction was deleted """
+  active: Boolean!
+
+  """Timestamp when the auction was deleted"""
+  deletedAt: BigInt!
+}
+
+input DebtAuction_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  bidAmount: BigInt
+  bidAmount_not: BigInt
+  bidAmount_gt: BigInt
+  bidAmount_lt: BigInt
+  bidAmount_gte: BigInt
+  bidAmount_lte: BigInt
+  bidAmount_in: [BigInt!]
+  bidAmount_not_in: [BigInt!]
+  quantity: BigInt
+  quantity_not: BigInt
+  quantity_gt: BigInt
+  quantity_lt: BigInt
+  quantity_gte: BigInt
+  quantity_lte: BigInt
+  quantity_in: [BigInt!]
+  quantity_not_in: [BigInt!]
+  highestBidder: Bytes
+  highestBidder_not: Bytes
+  highestBidder_gt: Bytes
+  highestBidder_lt: Bytes
+  highestBidder_gte: Bytes
+  highestBidder_lte: Bytes
+  highestBidder_in: [Bytes!]
+  highestBidder_not_in: [Bytes!]
+  highestBidder_contains: Bytes
+  highestBidder_not_contains: Bytes
+  endTimeAt: BigInt
+  endTimeAt_not: BigInt
+  endTimeAt_gt: BigInt
+  endTimeAt_lt: BigInt
+  endTimeAt_gte: BigInt
+  endTimeAt_lte: BigInt
+  endTimeAt_in: [BigInt!]
+  endTimeAt_not_in: [BigInt!]
+  createdAt: BigInt
+  createdAt_not: BigInt
+  createdAt_gt: BigInt
+  createdAt_lt: BigInt
+  createdAt_gte: BigInt
+  createdAt_lte: BigInt
+  createdAt_in: [BigInt!]
+  createdAt_not_in: [BigInt!]
+  updatedAt: BigInt
+  updatedAt_not: BigInt
+  updatedAt_gt: BigInt
+  updatedAt_lt: BigInt
+  updatedAt_gte: BigInt
+  updatedAt_lte: BigInt
+  updatedAt_in: [BigInt!]
+  updatedAt_not_in: [BigInt!]
+  active: Boolean
+  active_not: Boolean
+  active_in: [Boolean!]
+  active_not_in: [Boolean!]
+  deletedAt: BigInt
+  deletedAt_not: BigInt
+  deletedAt_gt: BigInt
+  deletedAt_lt: BigInt
+  deletedAt_gte: BigInt
+  deletedAt_lte: BigInt
+  deletedAt_in: [BigInt!]
+  deletedAt_not_in: [BigInt!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [DebtAuction_filter]
+  or: [DebtAuction_filter]
+}
+
+enum DebtAuction_orderBy {
+  id
+  bidAmount
+  quantity
+  highestBidder
+  endTimeAt
+  createdAt
+  updatedAt
+  active
+  deletedAt
+}
+
+enum Direction {
+  IN
+  OUT
+}
+
+"8 bytes signed integer\n"
+scalar Int8
+
+type LiveChangeLog {
+  id: ID!
+  contract: Bytes!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+input LiveChangeLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  contract: Bytes
+  contract_not: Bytes
+  contract_gt: Bytes
+  contract_lt: Bytes
+  contract_gte: Bytes
+  contract_lte: Bytes
+  contract_in: [Bytes!]
+  contract_not_in: [Bytes!]
+  contract_contains: Bytes
+  contract_not_contains: Bytes
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [LiveChangeLog_filter]
+  or: [LiveChangeLog_filter]
+}
+
+enum LiveChangeLog_orderBy {
+  id
+  contract
+  block
+  timestamp
+  transaction
+}
+
+type MkrApproval {
+  """ Equals to: <owner>-<spender> """
+  id: ID!
+  owner: User!
+  spender: User!
+  amount: BigDecimal!
+  createdAt: BigInt!
+  updatedAt: BigInt!
+}
+
+input MkrApproval_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
+  owner_: User_filter
+  spender: String
+  spender_not: String
+  spender_gt: String
+  spender_lt: String
+  spender_gte: String
+  spender_lte: String
+  spender_in: [String!]
+  spender_not_in: [String!]
+  spender_contains: String
+  spender_contains_nocase: String
+  spender_not_contains: String
+  spender_not_contains_nocase: String
+  spender_starts_with: String
+  spender_starts_with_nocase: String
+  spender_not_starts_with: String
+  spender_not_starts_with_nocase: String
+  spender_ends_with: String
+  spender_ends_with_nocase: String
+  spender_not_ends_with: String
+  spender_not_ends_with_nocase: String
+  spender_: User_filter
+  amount: BigDecimal
+  amount_not: BigDecimal
+  amount_gt: BigDecimal
+  amount_lt: BigDecimal
+  amount_gte: BigDecimal
+  amount_lte: BigDecimal
+  amount_in: [BigDecimal!]
+  amount_not_in: [BigDecimal!]
+  createdAt: BigInt
+  createdAt_not: BigInt
+  createdAt_gt: BigInt
+  createdAt_lt: BigInt
+  createdAt_gte: BigInt
+  createdAt_lte: BigInt
+  createdAt_in: [BigInt!]
+  createdAt_not_in: [BigInt!]
+  updatedAt: BigInt
+  updatedAt_not: BigInt
+  updatedAt_gt: BigInt
+  updatedAt_lt: BigInt
+  updatedAt_gte: BigInt
+  updatedAt_lte: BigInt
+  updatedAt_in: [BigInt!]
+  updatedAt_not_in: [BigInt!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [MkrApproval_filter]
+  or: [MkrApproval_filter]
+}
+
+enum MkrApproval_orderBy {
+  id
+  owner
+  owner__id
+  owner__address
+  owner__totalVaultDai
+  owner__totalDaiBalance
+  owner__savings
+  owner__totalMkrBalance
+  owner__proxyCount
+  owner__vaultCount
+  spender
+  spender__id
+  spender__address
+  spender__totalVaultDai
+  spender__totalDaiBalance
+  spender__savings
+  spender__totalMkrBalance
+  spender__proxyCount
+  spender__vaultCount
+  amount
+  createdAt
+  updatedAt
+}
+
+type MkrTransfer {
+  """ Equals to: <src>-<dst>-<tx> """
+  id: ID!
+  src: User!
+  dst: User!
+  amount: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+input MkrTransfer_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  src: String
+  src_not: String
+  src_gt: String
+  src_lt: String
+  src_gte: String
+  src_lte: String
+  src_in: [String!]
+  src_not_in: [String!]
+  src_contains: String
+  src_contains_nocase: String
+  src_not_contains: String
+  src_not_contains_nocase: String
+  src_starts_with: String
+  src_starts_with_nocase: String
+  src_not_starts_with: String
+  src_not_starts_with_nocase: String
+  src_ends_with: String
+  src_ends_with_nocase: String
+  src_not_ends_with: String
+  src_not_ends_with_nocase: String
+  src_: User_filter
+  dst: String
+  dst_not: String
+  dst_gt: String
+  dst_lt: String
+  dst_gte: String
+  dst_lte: String
+  dst_in: [String!]
+  dst_not_in: [String!]
+  dst_contains: String
+  dst_contains_nocase: String
+  dst_not_contains: String
+  dst_not_contains_nocase: String
+  dst_starts_with: String
+  dst_starts_with_nocase: String
+  dst_not_starts_with: String
+  dst_not_starts_with_nocase: String
+  dst_ends_with: String
+  dst_ends_with_nocase: String
+  dst_not_ends_with: String
+  dst_not_ends_with_nocase: String
+  dst_: User_filter
+  amount: BigDecimal
+  amount_not: BigDecimal
+  amount_gt: BigDecimal
+  amount_lt: BigDecimal
+  amount_gte: BigDecimal
+  amount_lte: BigDecimal
+  amount_in: [BigDecimal!]
+  amount_not_in: [BigDecimal!]
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [MkrTransfer_filter]
+  or: [MkrTransfer_filter]
+}
+
+enum MkrTransfer_orderBy {
+  id
+  src
+  src__id
+  src__address
+  src__totalVaultDai
+  src__totalDaiBalance
+  src__savings
+  src__totalMkrBalance
+  src__proxyCount
+  src__vaultCount
+  dst
+  dst__id
+  dst__address
+  dst__totalVaultDai
+  dst__totalDaiBalance
+  dst__savings
+  dst__totalMkrBalance
+  dst__proxyCount
+  dst__vaultCount
+  amount
+  block
+  timestamp
+  transaction
+}
+
+"""Defines the order direction, either ascending or descending"""
+enum OrderDirection {
+  asc
+  desc
+}
+
+type PopDebtQueueLog {
+  id: ID!
+  amount: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+input PopDebtQueueLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  amount: BigDecimal
+  amount_not: BigDecimal
+  amount_gt: BigDecimal
+  amount_lt: BigDecimal
+  amount_gte: BigDecimal
+  amount_lte: BigDecimal
+  amount_in: [BigDecimal!]
+  amount_not_in: [BigDecimal!]
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [PopDebtQueueLog_filter]
+  or: [PopDebtQueueLog_filter]
+}
+
+enum PopDebtQueueLog_orderBy {
+  id
+  amount
+  block
+  timestamp
+  transaction
+}
+
+type PushDebtQueueLog {
+  id: ID!
+  amount: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+input PushDebtQueueLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  amount: BigDecimal
+  amount_not: BigDecimal
+  amount_gt: BigDecimal
+  amount_lt: BigDecimal
+  amount_gte: BigDecimal
+  amount_lte: BigDecimal
+  amount_in: [BigDecimal!]
+  amount_not_in: [BigDecimal!]
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [PushDebtQueueLog_filter]
+  or: [PushDebtQueueLog_filter]
+}
+
+enum PushDebtQueueLog_orderBy {
+  id
+  amount
+  block
+  timestamp
+  transaction
+}
+
+type Query {
+  systemDebt(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): SystemDebt
+  systemDebts(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: SystemDebt_orderBy
+    orderDirection: OrderDirection
+    where: SystemDebt_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [SystemDebt!]!
+  collateral(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Collateral
+  collaterals(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Collateral_orderBy
+    orderDirection: OrderDirection
+    where: Collateral_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Collateral!]!
+  collateralType(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): CollateralType
+  collateralTypes(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: CollateralType_orderBy
+    orderDirection: OrderDirection
+    where: CollateralType_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [CollateralType!]!
+  collateralPrice(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): CollateralPrice
+  collateralPrices(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: CollateralPrice_orderBy
+    orderDirection: OrderDirection
+    where: CollateralPrice_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [CollateralPrice!]!
+  user(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): User
+  users(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: User_orderBy
+    orderDirection: OrderDirection
+    where: User_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [User!]!
+  userProxy(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): UserProxy
+  userProxies(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: UserProxy_orderBy
+    orderDirection: OrderDirection
+    where: UserProxy_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [UserProxy!]!
+  systemState(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): SystemState
+  systemStates(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: SystemState_orderBy
+    orderDirection: OrderDirection
+    where: SystemState_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [SystemState!]!
+  debtAuction(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): DebtAuction
+  debtAuctions(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: DebtAuction_orderBy
+    orderDirection: OrderDirection
+    where: DebtAuction_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [DebtAuction!]!
+  surplusAuction(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): SurplusAuction
+  surplusAuctions(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: SurplusAuction_orderBy
+    orderDirection: OrderDirection
+    where: SurplusAuction_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [SurplusAuction!]!
+  vault(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Vault
+  vaults(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Vault_orderBy
+    orderDirection: OrderDirection
+    where: Vault_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Vault!]!
+  vaultCreationLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): VaultCreationLog
+  vaultCreationLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: VaultCreationLog_orderBy
+    orderDirection: OrderDirection
+    where: VaultCreationLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [VaultCreationLog!]!
+  vaultCollateralChangeLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): VaultCollateralChangeLog
+  vaultCollateralChangeLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: VaultCollateralChangeLog_orderBy
+    orderDirection: OrderDirection
+    where: VaultCollateralChangeLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [VaultCollateralChangeLog!]!
+  vaultDebtChangeLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): VaultDebtChangeLog
+  vaultDebtChangeLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: VaultDebtChangeLog_orderBy
+    orderDirection: OrderDirection
+    where: VaultDebtChangeLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [VaultDebtChangeLog!]!
+  vaultSplitChangeLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): VaultSplitChangeLog
+  vaultSplitChangeLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: VaultSplitChangeLog_orderBy
+    orderDirection: OrderDirection
+    where: VaultSplitChangeLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [VaultSplitChangeLog!]!
+  vaultTransferChangeLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): VaultTransferChangeLog
+  vaultTransferChangeLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: VaultTransferChangeLog_orderBy
+    orderDirection: OrderDirection
+    where: VaultTransferChangeLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [VaultTransferChangeLog!]!
+  collateralChangeLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): CollateralChangeLog
+  collateralChangeLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: CollateralChangeLog_orderBy
+    orderDirection: OrderDirection
+    where: CollateralChangeLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [CollateralChangeLog!]!
+  collateralTransferLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): CollateralTransferLog
+  collateralTransferLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: CollateralTransferLog_orderBy
+    orderDirection: OrderDirection
+    where: CollateralTransferLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [CollateralTransferLog!]!
+  daiMoveLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): DaiMoveLog
+  daiMoveLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: DaiMoveLog_orderBy
+    orderDirection: OrderDirection
+    where: DaiMoveLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [DaiMoveLog!]!
+  mkrTransfer(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): MkrTransfer
+  mkrTransfers(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: MkrTransfer_orderBy
+    orderDirection: OrderDirection
+    where: MkrTransfer_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [MkrTransfer!]!
+  mkrApproval(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): MkrApproval
+  mkrApprovals(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: MkrApproval_orderBy
+    orderDirection: OrderDirection
+    where: MkrApproval_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [MkrApproval!]!
+  spotParLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): SpotParLog
+  spotParLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: SpotParLog_orderBy
+    orderDirection: OrderDirection
+    where: SpotParLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [SpotParLog!]!
+  liveChangeLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): LiveChangeLog
+  liveChangeLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: LiveChangeLog_orderBy
+    orderDirection: OrderDirection
+    where: LiveChangeLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [LiveChangeLog!]!
+  collateralPriceUpdateLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): CollateralPriceUpdateLog
+  collateralPriceUpdateLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: CollateralPriceUpdateLog_orderBy
+    orderDirection: OrderDirection
+    where: CollateralPriceUpdateLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [CollateralPriceUpdateLog!]!
+  pushDebtQueueLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): PushDebtQueueLog
+  pushDebtQueueLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: PushDebtQueueLog_orderBy
+    orderDirection: OrderDirection
+    where: PushDebtQueueLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [PushDebtQueueLog!]!
+  popDebtQueueLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): PopDebtQueueLog
+  popDebtQueueLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: PopDebtQueueLog_orderBy
+    orderDirection: OrderDirection
+    where: PopDebtQueueLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [PopDebtQueueLog!]!
+  vowFlapLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): VowFlapLog
+  vowFlapLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: VowFlapLog_orderBy
+    orderDirection: OrderDirection
+    where: VowFlapLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [VowFlapLog!]!
+  vowFlopLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): VowFlopLog
+  vowFlopLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: VowFlopLog_orderBy
+    orderDirection: OrderDirection
+    where: VowFlopLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [VowFlopLog!]!
+  daiTransfer(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): DaiTransfer
+  daiTransfers(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: DaiTransfer_orderBy
+    orderDirection: OrderDirection
+    where: DaiTransfer_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [DaiTransfer!]!
+  daiApproval(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): DaiApproval
+  daiApprovals(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: DaiApproval_orderBy
+    orderDirection: OrderDirection
+    where: DaiApproval_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [DaiApproval!]!
+  saleAuction(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): SaleAuction
+  saleAuctions(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: SaleAuction_orderBy
+    orderDirection: OrderDirection
+    where: SaleAuction_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [SaleAuction!]!
+  auction(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Auction
+  auctions(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Auction_orderBy
+    orderDirection: OrderDirection
+    where: Auction_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Auction!]!
+  vaultLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): VaultLog
+  vaultLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: VaultLog_orderBy
+    orderDirection: OrderDirection
+    where: VaultLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [VaultLog!]!
+  collateralLog(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): CollateralLog
+  collateralLogs(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: CollateralLog_orderBy
+    orderDirection: OrderDirection
+    where: CollateralLog_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [CollateralLog!]!
+
+  """Access to subgraph metadata"""
+  _meta(block: Block_height): _Meta_
+}
+
+type SaleAuction {
+  id: ID!
+
+  """ The target DAI to raise from the auction [tab in SmartContract]"""
+  amountDaiToRaise: BigDecimal!
+
+  """ The Vault that gets liquidated """
+  vault: Vault!
+
+  """ The Collateral that gets auctioned off """
+  collateralType: CollateralType!
+
+  """ The amount of collateral available for purchase [lot in SmartContract]
+  """
+  amountCollateralToSell: BigDecimal!
+
+  """ User to return any excess collateral [usr in SmartContract]"""
+  userExcessCollateral: User!
+
+  """ User where DAI incentives will be sent [kpr in SmartContract]"""
+  userIncentives: User!
+
+  """ Auction inicial price [top in SmartContract]"""
+  startingPrice: BigDecimal!
+
+  """ Auction start time [tic in SmartContract]"""
+  startedAt: BigInt!
+
+  """ Last Update timesmatp"""
+  updatedAt: BigInt!
+
+  """ Auction reset time """
+  resetedAt: BigInt!
+
+  """ Auction buy time """
+  boughtAt: BigInt!
+
+  """ timestamp when the Auction was removed"""
+  deletedAt: BigInt!
+
+  """ Auction is active """
+  isActive: Boolean!
+
+  """ Clipper cpntract addres """
+  clipperContract: Bytes!
+}
+
+input SaleAuction_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  amountDaiToRaise: BigDecimal
+  amountDaiToRaise_not: BigDecimal
+  amountDaiToRaise_gt: BigDecimal
+  amountDaiToRaise_lt: BigDecimal
+  amountDaiToRaise_gte: BigDecimal
+  amountDaiToRaise_lte: BigDecimal
+  amountDaiToRaise_in: [BigDecimal!]
+  amountDaiToRaise_not_in: [BigDecimal!]
+  vault: String
+  vault_not: String
+  vault_gt: String
+  vault_lt: String
+  vault_gte: String
+  vault_lte: String
+  vault_in: [String!]
+  vault_not_in: [String!]
+  vault_contains: String
+  vault_contains_nocase: String
+  vault_not_contains: String
+  vault_not_contains_nocase: String
+  vault_starts_with: String
+  vault_starts_with_nocase: String
+  vault_not_starts_with: String
+  vault_not_starts_with_nocase: String
+  vault_ends_with: String
+  vault_ends_with_nocase: String
+  vault_not_ends_with: String
+  vault_not_ends_with_nocase: String
+  vault_: Vault_filter
+  collateralType: String
+  collateralType_not: String
+  collateralType_gt: String
+  collateralType_lt: String
+  collateralType_gte: String
+  collateralType_lte: String
+  collateralType_in: [String!]
+  collateralType_not_in: [String!]
+  collateralType_contains: String
+  collateralType_contains_nocase: String
+  collateralType_not_contains: String
+  collateralType_not_contains_nocase: String
+  collateralType_starts_with: String
+  collateralType_starts_with_nocase: String
+  collateralType_not_starts_with: String
+  collateralType_not_starts_with_nocase: String
+  collateralType_ends_with: String
+  collateralType_ends_with_nocase: String
+  collateralType_not_ends_with: String
+  collateralType_not_ends_with_nocase: String
+  collateralType_: CollateralType_filter
+  amountCollateralToSell: BigDecimal
+  amountCollateralToSell_not: BigDecimal
+  amountCollateralToSell_gt: BigDecimal
+  amountCollateralToSell_lt: BigDecimal
+  amountCollateralToSell_gte: BigDecimal
+  amountCollateralToSell_lte: BigDecimal
+  amountCollateralToSell_in: [BigDecimal!]
+  amountCollateralToSell_not_in: [BigDecimal!]
+  userExcessCollateral: String
+  userExcessCollateral_not: String
+  userExcessCollateral_gt: String
+  userExcessCollateral_lt: String
+  userExcessCollateral_gte: String
+  userExcessCollateral_lte: String
+  userExcessCollateral_in: [String!]
+  userExcessCollateral_not_in: [String!]
+  userExcessCollateral_contains: String
+  userExcessCollateral_contains_nocase: String
+  userExcessCollateral_not_contains: String
+  userExcessCollateral_not_contains_nocase: String
+  userExcessCollateral_starts_with: String
+  userExcessCollateral_starts_with_nocase: String
+  userExcessCollateral_not_starts_with: String
+  userExcessCollateral_not_starts_with_nocase: String
+  userExcessCollateral_ends_with: String
+  userExcessCollateral_ends_with_nocase: String
+  userExcessCollateral_not_ends_with: String
+  userExcessCollateral_not_ends_with_nocase: String
+  userExcessCollateral_: User_filter
+  userIncentives: String
+  userIncentives_not: String
+  userIncentives_gt: String
+  userIncentives_lt: String
+  userIncentives_gte: String
+  userIncentives_lte: String
+  userIncentives_in: [String!]
+  userIncentives_not_in: [String!]
+  userIncentives_contains: String
+  userIncentives_contains_nocase: String
+  userIncentives_not_contains: String
+  userIncentives_not_contains_nocase: String
+  userIncentives_starts_with: String
+  userIncentives_starts_with_nocase: String
+  userIncentives_not_starts_with: String
+  userIncentives_not_starts_with_nocase: String
+  userIncentives_ends_with: String
+  userIncentives_ends_with_nocase: String
+  userIncentives_not_ends_with: String
+  userIncentives_not_ends_with_nocase: String
+  userIncentives_: User_filter
+  startingPrice: BigDecimal
+  startingPrice_not: BigDecimal
+  startingPrice_gt: BigDecimal
+  startingPrice_lt: BigDecimal
+  startingPrice_gte: BigDecimal
+  startingPrice_lte: BigDecimal
+  startingPrice_in: [BigDecimal!]
+  startingPrice_not_in: [BigDecimal!]
+  startedAt: BigInt
+  startedAt_not: BigInt
+  startedAt_gt: BigInt
+  startedAt_lt: BigInt
+  startedAt_gte: BigInt
+  startedAt_lte: BigInt
+  startedAt_in: [BigInt!]
+  startedAt_not_in: [BigInt!]
+  updatedAt: BigInt
+  updatedAt_not: BigInt
+  updatedAt_gt: BigInt
+  updatedAt_lt: BigInt
+  updatedAt_gte: BigInt
+  updatedAt_lte: BigInt
+  updatedAt_in: [BigInt!]
+  updatedAt_not_in: [BigInt!]
+  resetedAt: BigInt
+  resetedAt_not: BigInt
+  resetedAt_gt: BigInt
+  resetedAt_lt: BigInt
+  resetedAt_gte: BigInt
+  resetedAt_lte: BigInt
+  resetedAt_in: [BigInt!]
+  resetedAt_not_in: [BigInt!]
+  boughtAt: BigInt
+  boughtAt_not: BigInt
+  boughtAt_gt: BigInt
+  boughtAt_lt: BigInt
+  boughtAt_gte: BigInt
+  boughtAt_lte: BigInt
+  boughtAt_in: [BigInt!]
+  boughtAt_not_in: [BigInt!]
+  deletedAt: BigInt
+  deletedAt_not: BigInt
+  deletedAt_gt: BigInt
+  deletedAt_lt: BigInt
+  deletedAt_gte: BigInt
+  deletedAt_lte: BigInt
+  deletedAt_in: [BigInt!]
+  deletedAt_not_in: [BigInt!]
+  isActive: Boolean
+  isActive_not: Boolean
+  isActive_in: [Boolean!]
+  isActive_not_in: [Boolean!]
+  clipperContract: Bytes
+  clipperContract_not: Bytes
+  clipperContract_gt: Bytes
+  clipperContract_lt: Bytes
+  clipperContract_gte: Bytes
+  clipperContract_lte: Bytes
+  clipperContract_in: [Bytes!]
+  clipperContract_not_in: [Bytes!]
+  clipperContract_contains: Bytes
+  clipperContract_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [SaleAuction_filter]
+  or: [SaleAuction_filter]
+}
+
+enum SaleAuction_orderBy {
+  id
+  amountDaiToRaise
+  vault
+  vault__id
+  vault__cdpId
+  vault__collateral
+  vault__debt
+  vault__handler
+  vault__openedAt
+  vault__openedAtBlock
+  vault__openedAtTransaction
+  vault__updatedAt
+  vault__updatedAtBlock
+  vault__updatedAtTransaction
+  collateralType
+  collateralType__id
+  collateralType__debtCeiling
+  collateralType__debtNormalized
+  collateralType__rate
+  collateralType__totalCollateral
+  collateralType__totalDebt
+  collateralType__liquidationLotSize
+  collateralType__liquidationPenalty
+  collateralType__liquidationRatio
+  collateralType__daiAmountToCoverDebtAndFees
+  collateralType__maxDaiToCoverAuction
+  collateralType__liquidatorAddress
+  collateralType__stabilityFee
+  collateralType__stabilityFeeUpdatedAt
+  collateralType__vaultDebtFloor
+  collateralType__vaultCount
+  collateralType__unmanagedVaultCount
+  collateralType__addedAt
+  collateralType__addedAtBlock
+  collateralType__addedAtTransaction
+  collateralType__updatedAt
+  collateralType__updatedAtBlock
+  collateralType__updatedAtTransaction
+  amountCollateralToSell
+  userExcessCollateral
+  userExcessCollateral__id
+  userExcessCollateral__address
+  userExcessCollateral__totalVaultDai
+  userExcessCollateral__totalDaiBalance
+  userExcessCollateral__savings
+  userExcessCollateral__totalMkrBalance
+  userExcessCollateral__proxyCount
+  userExcessCollateral__vaultCount
+  userIncentives
+  userIncentives__id
+  userIncentives__address
+  userIncentives__totalVaultDai
+  userIncentives__totalDaiBalance
+  userIncentives__savings
+  userIncentives__totalMkrBalance
+  userIncentives__proxyCount
+  userIncentives__vaultCount
+  startingPrice
+  startedAt
+  updatedAt
+  resetedAt
+  boughtAt
+  deletedAt
+  isActive
+  clipperContract
+}
+
+type SpotParLog {
+  id: ID!
+  timestamp: BigInt!
+  block: BigInt!
+  transaction: Bytes!
+
+  """ Value of DAI in the reference asset (e.g. $1 per DAI) """
+  par: BigInt!
+}
+
+input SpotParLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+  par: BigInt
+  par_not: BigInt
+  par_gt: BigInt
+  par_lt: BigInt
+  par_gte: BigInt
+  par_lte: BigInt
+  par_in: [BigInt!]
+  par_not_in: [BigInt!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [SpotParLog_filter]
+  or: [SpotParLog_filter]
+}
+
+enum SpotParLog_orderBy {
+  id
+  timestamp
+  block
+  transaction
+  par
+}
+
+type SurplusAuction implements Auction {
+  """ incrementing number. Equals to the String of the Flapper#ID """
+  id: ID!
+
+  """ Bid amount in DAI """
+  bidAmount: BigInt!
+
+  """ auction quantity up for sale (lot) """
+  quantity: BigInt!
+
+  """ the highest auction bidder (guy) """
+  highestBidder: Bytes!
+
+  """ TS when the auction ends """
+  endTimeAt: BigInt!
+
+  """ TS CreatedAt (kick time) """
+  createdAt: BigInt!
+
+  """ TS modifiedAt """
+  updatedAt: BigInt!
+
+  """False if Auction was deleted """
+  active: Boolean!
+
+  """Timestamp when the auction was deleted"""
+  deletedAt: BigInt!
+}
+
+input SurplusAuction_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  bidAmount: BigInt
+  bidAmount_not: BigInt
+  bidAmount_gt: BigInt
+  bidAmount_lt: BigInt
+  bidAmount_gte: BigInt
+  bidAmount_lte: BigInt
+  bidAmount_in: [BigInt!]
+  bidAmount_not_in: [BigInt!]
+  quantity: BigInt
+  quantity_not: BigInt
+  quantity_gt: BigInt
+  quantity_lt: BigInt
+  quantity_gte: BigInt
+  quantity_lte: BigInt
+  quantity_in: [BigInt!]
+  quantity_not_in: [BigInt!]
+  highestBidder: Bytes
+  highestBidder_not: Bytes
+  highestBidder_gt: Bytes
+  highestBidder_lt: Bytes
+  highestBidder_gte: Bytes
+  highestBidder_lte: Bytes
+  highestBidder_in: [Bytes!]
+  highestBidder_not_in: [Bytes!]
+  highestBidder_contains: Bytes
+  highestBidder_not_contains: Bytes
+  endTimeAt: BigInt
+  endTimeAt_not: BigInt
+  endTimeAt_gt: BigInt
+  endTimeAt_lt: BigInt
+  endTimeAt_gte: BigInt
+  endTimeAt_lte: BigInt
+  endTimeAt_in: [BigInt!]
+  endTimeAt_not_in: [BigInt!]
+  createdAt: BigInt
+  createdAt_not: BigInt
+  createdAt_gt: BigInt
+  createdAt_lt: BigInt
+  createdAt_gte: BigInt
+  createdAt_lte: BigInt
+  createdAt_in: [BigInt!]
+  createdAt_not_in: [BigInt!]
+  updatedAt: BigInt
+  updatedAt_not: BigInt
+  updatedAt_gt: BigInt
+  updatedAt_lt: BigInt
+  updatedAt_gte: BigInt
+  updatedAt_lte: BigInt
+  updatedAt_in: [BigInt!]
+  updatedAt_not_in: [BigInt!]
+  active: Boolean
+  active_not: Boolean
+  active_in: [Boolean!]
+  active_not_in: [Boolean!]
+  deletedAt: BigInt
+  deletedAt_not: BigInt
+  deletedAt_gt: BigInt
+  deletedAt_lt: BigInt
+  deletedAt_gte: BigInt
+  deletedAt_lte: BigInt
+  deletedAt_in: [BigInt!]
+  deletedAt_not_in: [BigInt!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [SurplusAuction_filter]
+  or: [SurplusAuction_filter]
+}
+
+enum SurplusAuction_orderBy {
+  id
+  bidAmount
+  quantity
+  highestBidder
+  endTimeAt
+  createdAt
+  updatedAt
+  active
+  deletedAt
+}
+
+type SystemDebt {
+  id: ID!
+  owner: User
+  amount: BigDecimal!
+}
+
+input SystemDebt_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
+  owner_: User_filter
+  amount: BigDecimal
+  amount_not: BigDecimal
+  amount_gt: BigDecimal
+  amount_lt: BigDecimal
+  amount_gte: BigDecimal
+  amount_lte: BigDecimal
+  amount_in: [BigDecimal!]
+  amount_not_in: [BigDecimal!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [SystemDebt_filter]
+  or: [SystemDebt_filter]
+}
+
+enum SystemDebt_orderBy {
+  id
+  owner
+  owner__id
+  owner__address
+  owner__totalVaultDai
+  owner__totalDaiBalance
+  owner__savings
+  owner__totalMkrBalance
+  owner__proxyCount
+  owner__vaultCount
+  amount
+}
+
+""" Provide information about the current system state and parameters """
+type SystemState {
+  """ Singleton entity. Equals to 'current' """
+  id: ID!
+
+  """ Total mkr issued [MKR] DSToken._supply"""
+  totalMkr: BigDecimal!
+
+  """ Total debt issued [DAI] (Vat.debt)"""
+  totalDebt: BigDecimal!
+
+  """Total unbacked debt DAI (Vat.vice)"""
+  totalSystemDebt: BigDecimal!
+  systemDebt(skip: Int = 0, first: Int = 100, orderBy: SystemDebt_orderBy, orderDirection: OrderDirection, where: SystemDebt_filter): [SystemDebt!]
+  systemDebtInQueue: BigDecimal!
+
+  """ Number of collateral types registered """
+  collateralCount: BigInt!
+
+  """ Number of user proxies created """
+  userProxyCount: BigInt!
+
+  """ Number of vaults NOT opened through the manager (CdpManager) """
+  unmanagedVaultCount: BigInt!
+
+  """ Number of vaults opened through the manager (CdpManager) """
+  vaultCount: BigInt!
+
+  """ Base rate for stability fee per second """
+  baseStabilityFee: BigDecimal!
+
+  """ Dai Savings Rate """
+  savingsRate: BigDecimal!
+
+  """ Total Debt Ceiling """
+  totalDebtCeiling: BigDecimal!
+
+  """ Address that conforms to a FlapLike interface """
+  vowFlapperContract: Bytes!
+
+  """ Address that conforms to a Floplike interface """
+  vowFlopperContract: Bytes!
+
+  """ Max bid duration / single bid lifetime [seconds] """
+  debtAuctionBidDuration: BigInt
+
+  """ The fixed debt quantity to be covered by any one debt auction [DAI] """
+  debtAuctionBidSize: BigDecimal
+
+  """ Debt auction delay [seconds] """
+  debtAuctionDelay: BigInt
+
+  """ Maximum auction duration [seconds] """
+  debtAuctionDuration: BigInt
+
+  """ The starting amount of MKR offered to cover the lot [MKR] """
+  debtAuctionInitialLotSize: BigDecimal
+
+  """ Lot size increase """
+  debtAuctionLotSizeIncrease: BigDecimal
+
+  """ Minimum bid increase """
+  debtAuctionMinimumBidIncrease: BigDecimal
+
+  """ Vow#Ash the total amount of on-auction debt."""
+  debtOnAuctionTotalAmount: BigDecimal
+
+  """ Max bid duration / bid lifetime [seconds] """
+  surplusAuctionBidDuration: BigInt
+
+  """ Surplus buffer, must be exceeded before surplus auctions are possible [DAI] 
+  """
+  surplusAuctionBuffer: BigDecimal
+
+  """ Maximum auction duration [seconds] """
+  surplusAuctionDuration: BigInt
+
+  """ The fixed surplus quantity to be sold by any one surplus auction [DAI] 
+  """
+  surplusAuctionLotSize: BigDecimal
+
+  """ Minimum bid increase """
+  surplusAuctionMinimumBidIncrease: BigDecimal
+
+  """ Address of the vow contract modify by Jug Contract"""
+  jugVowContract: Bytes!
+
+  """ Dai Savings Rate Live"""
+  dsrLive: Boolean!
+
+  """ Dai Savings Rate Live LastUpdate"""
+  dsrLiveUpdatedAt: BigInt!
+
+  """ Address that conforms to a VowLike interface """
+  potVowContract: Bytes!
+
+  """ Total savings in DAI of all users (Pot#Pie) """
+  totalSavingsInPot: BigDecimal!
+
+  """ Value which decides how much dai - given when drip() is called """
+  rateAccumulator: BigInt
+
+  """ last time the drip() function was called """
+  lastPotDripAt: BigInt
+
+  """ Max DAI needed to cover debt+fees of active auctions [rad] (Hole)"""
+  maxDaiToCoverAuction: BigDecimal!
+
+  """ Address that conforms to a VowLike interface """
+  dogVowContract: Bytes!
+
+  """ Total supply of ERC20.DAI """
+  daiTotalSupply: BigDecimal!
+
+  """ Amount of DAI needed to cover debt + fees of active auctions (Dog#Dirt) 
+  """
+  totalDaiAmountToCoverDebtAndFees: BigDecimal!
+
+  """ Multiplicative factor to increase starting price (Clipper#buf)"""
+  saleAuctionStartingPriceFactor: BigDecimal!
+
+  """ Time elapsed before auction reset (Clipper#tail)"""
+  saleAuctionResetTime: BigInt!
+
+  """ Percentage drop before auction reset (Clipper#cusp) """
+  saleAuctionDropPercentage: BigDecimal!
+
+  """ Percentage of tab to suck from vow to incentivize keepers (Clipper#chip) 
+  """
+  saleAuctionDaiToRaisePercentage: BigDecimal!
+
+  """ Flat fee to suck from vow to incentivize keepers (Clipper#tip) """
+  saleAuctionFlatFee: BigDecimal!
+
+  """ Spotter contract address on Clipper (Clipper#spotter) """
+  saleAuctionSpotterContract: Bytes!
+
+  """ Dog contract address on Clipper (Clipper#dog) """
+  saleAuctionDogContract: Bytes!
+
+  """ Vow contract address on Clipper (Clipper#vow) """
+  saleAuctionVowContract: Bytes!
+
+  """ Calc contract address on Clipper (Clipper#calc) """
+  saleAuctionCalcContract: Bytes!
+
+  """ Length of time between price drops (cut)"""
+  secondsBetweenPriceDrops: BigInt!
+
+  """ Per-step multiplicative factor (step) [ray]"""
+  multiplicatorFactorPerStep: BigDecimal!
+}
+
+input SystemState_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  totalMkr: BigDecimal
+  totalMkr_not: BigDecimal
+  totalMkr_gt: BigDecimal
+  totalMkr_lt: BigDecimal
+  totalMkr_gte: BigDecimal
+  totalMkr_lte: BigDecimal
+  totalMkr_in: [BigDecimal!]
+  totalMkr_not_in: [BigDecimal!]
+  totalDebt: BigDecimal
+  totalDebt_not: BigDecimal
+  totalDebt_gt: BigDecimal
+  totalDebt_lt: BigDecimal
+  totalDebt_gte: BigDecimal
+  totalDebt_lte: BigDecimal
+  totalDebt_in: [BigDecimal!]
+  totalDebt_not_in: [BigDecimal!]
+  totalSystemDebt: BigDecimal
+  totalSystemDebt_not: BigDecimal
+  totalSystemDebt_gt: BigDecimal
+  totalSystemDebt_lt: BigDecimal
+  totalSystemDebt_gte: BigDecimal
+  totalSystemDebt_lte: BigDecimal
+  totalSystemDebt_in: [BigDecimal!]
+  totalSystemDebt_not_in: [BigDecimal!]
+  systemDebt: [String!]
+  systemDebt_not: [String!]
+  systemDebt_contains: [String!]
+  systemDebt_contains_nocase: [String!]
+  systemDebt_not_contains: [String!]
+  systemDebt_not_contains_nocase: [String!]
+  systemDebt_: SystemDebt_filter
+  systemDebtInQueue: BigDecimal
+  systemDebtInQueue_not: BigDecimal
+  systemDebtInQueue_gt: BigDecimal
+  systemDebtInQueue_lt: BigDecimal
+  systemDebtInQueue_gte: BigDecimal
+  systemDebtInQueue_lte: BigDecimal
+  systemDebtInQueue_in: [BigDecimal!]
+  systemDebtInQueue_not_in: [BigDecimal!]
+  collateralCount: BigInt
+  collateralCount_not: BigInt
+  collateralCount_gt: BigInt
+  collateralCount_lt: BigInt
+  collateralCount_gte: BigInt
+  collateralCount_lte: BigInt
+  collateralCount_in: [BigInt!]
+  collateralCount_not_in: [BigInt!]
+  userProxyCount: BigInt
+  userProxyCount_not: BigInt
+  userProxyCount_gt: BigInt
+  userProxyCount_lt: BigInt
+  userProxyCount_gte: BigInt
+  userProxyCount_lte: BigInt
+  userProxyCount_in: [BigInt!]
+  userProxyCount_not_in: [BigInt!]
+  unmanagedVaultCount: BigInt
+  unmanagedVaultCount_not: BigInt
+  unmanagedVaultCount_gt: BigInt
+  unmanagedVaultCount_lt: BigInt
+  unmanagedVaultCount_gte: BigInt
+  unmanagedVaultCount_lte: BigInt
+  unmanagedVaultCount_in: [BigInt!]
+  unmanagedVaultCount_not_in: [BigInt!]
+  vaultCount: BigInt
+  vaultCount_not: BigInt
+  vaultCount_gt: BigInt
+  vaultCount_lt: BigInt
+  vaultCount_gte: BigInt
+  vaultCount_lte: BigInt
+  vaultCount_in: [BigInt!]
+  vaultCount_not_in: [BigInt!]
+  baseStabilityFee: BigDecimal
+  baseStabilityFee_not: BigDecimal
+  baseStabilityFee_gt: BigDecimal
+  baseStabilityFee_lt: BigDecimal
+  baseStabilityFee_gte: BigDecimal
+  baseStabilityFee_lte: BigDecimal
+  baseStabilityFee_in: [BigDecimal!]
+  baseStabilityFee_not_in: [BigDecimal!]
+  savingsRate: BigDecimal
+  savingsRate_not: BigDecimal
+  savingsRate_gt: BigDecimal
+  savingsRate_lt: BigDecimal
+  savingsRate_gte: BigDecimal
+  savingsRate_lte: BigDecimal
+  savingsRate_in: [BigDecimal!]
+  savingsRate_not_in: [BigDecimal!]
+  totalDebtCeiling: BigDecimal
+  totalDebtCeiling_not: BigDecimal
+  totalDebtCeiling_gt: BigDecimal
+  totalDebtCeiling_lt: BigDecimal
+  totalDebtCeiling_gte: BigDecimal
+  totalDebtCeiling_lte: BigDecimal
+  totalDebtCeiling_in: [BigDecimal!]
+  totalDebtCeiling_not_in: [BigDecimal!]
+  vowFlapperContract: Bytes
+  vowFlapperContract_not: Bytes
+  vowFlapperContract_gt: Bytes
+  vowFlapperContract_lt: Bytes
+  vowFlapperContract_gte: Bytes
+  vowFlapperContract_lte: Bytes
+  vowFlapperContract_in: [Bytes!]
+  vowFlapperContract_not_in: [Bytes!]
+  vowFlapperContract_contains: Bytes
+  vowFlapperContract_not_contains: Bytes
+  vowFlopperContract: Bytes
+  vowFlopperContract_not: Bytes
+  vowFlopperContract_gt: Bytes
+  vowFlopperContract_lt: Bytes
+  vowFlopperContract_gte: Bytes
+  vowFlopperContract_lte: Bytes
+  vowFlopperContract_in: [Bytes!]
+  vowFlopperContract_not_in: [Bytes!]
+  vowFlopperContract_contains: Bytes
+  vowFlopperContract_not_contains: Bytes
+  debtAuctionBidDuration: BigInt
+  debtAuctionBidDuration_not: BigInt
+  debtAuctionBidDuration_gt: BigInt
+  debtAuctionBidDuration_lt: BigInt
+  debtAuctionBidDuration_gte: BigInt
+  debtAuctionBidDuration_lte: BigInt
+  debtAuctionBidDuration_in: [BigInt!]
+  debtAuctionBidDuration_not_in: [BigInt!]
+  debtAuctionBidSize: BigDecimal
+  debtAuctionBidSize_not: BigDecimal
+  debtAuctionBidSize_gt: BigDecimal
+  debtAuctionBidSize_lt: BigDecimal
+  debtAuctionBidSize_gte: BigDecimal
+  debtAuctionBidSize_lte: BigDecimal
+  debtAuctionBidSize_in: [BigDecimal!]
+  debtAuctionBidSize_not_in: [BigDecimal!]
+  debtAuctionDelay: BigInt
+  debtAuctionDelay_not: BigInt
+  debtAuctionDelay_gt: BigInt
+  debtAuctionDelay_lt: BigInt
+  debtAuctionDelay_gte: BigInt
+  debtAuctionDelay_lte: BigInt
+  debtAuctionDelay_in: [BigInt!]
+  debtAuctionDelay_not_in: [BigInt!]
+  debtAuctionDuration: BigInt
+  debtAuctionDuration_not: BigInt
+  debtAuctionDuration_gt: BigInt
+  debtAuctionDuration_lt: BigInt
+  debtAuctionDuration_gte: BigInt
+  debtAuctionDuration_lte: BigInt
+  debtAuctionDuration_in: [BigInt!]
+  debtAuctionDuration_not_in: [BigInt!]
+  debtAuctionInitialLotSize: BigDecimal
+  debtAuctionInitialLotSize_not: BigDecimal
+  debtAuctionInitialLotSize_gt: BigDecimal
+  debtAuctionInitialLotSize_lt: BigDecimal
+  debtAuctionInitialLotSize_gte: BigDecimal
+  debtAuctionInitialLotSize_lte: BigDecimal
+  debtAuctionInitialLotSize_in: [BigDecimal!]
+  debtAuctionInitialLotSize_not_in: [BigDecimal!]
+  debtAuctionLotSizeIncrease: BigDecimal
+  debtAuctionLotSizeIncrease_not: BigDecimal
+  debtAuctionLotSizeIncrease_gt: BigDecimal
+  debtAuctionLotSizeIncrease_lt: BigDecimal
+  debtAuctionLotSizeIncrease_gte: BigDecimal
+  debtAuctionLotSizeIncrease_lte: BigDecimal
+  debtAuctionLotSizeIncrease_in: [BigDecimal!]
+  debtAuctionLotSizeIncrease_not_in: [BigDecimal!]
+  debtAuctionMinimumBidIncrease: BigDecimal
+  debtAuctionMinimumBidIncrease_not: BigDecimal
+  debtAuctionMinimumBidIncrease_gt: BigDecimal
+  debtAuctionMinimumBidIncrease_lt: BigDecimal
+  debtAuctionMinimumBidIncrease_gte: BigDecimal
+  debtAuctionMinimumBidIncrease_lte: BigDecimal
+  debtAuctionMinimumBidIncrease_in: [BigDecimal!]
+  debtAuctionMinimumBidIncrease_not_in: [BigDecimal!]
+  debtOnAuctionTotalAmount: BigDecimal
+  debtOnAuctionTotalAmount_not: BigDecimal
+  debtOnAuctionTotalAmount_gt: BigDecimal
+  debtOnAuctionTotalAmount_lt: BigDecimal
+  debtOnAuctionTotalAmount_gte: BigDecimal
+  debtOnAuctionTotalAmount_lte: BigDecimal
+  debtOnAuctionTotalAmount_in: [BigDecimal!]
+  debtOnAuctionTotalAmount_not_in: [BigDecimal!]
+  surplusAuctionBidDuration: BigInt
+  surplusAuctionBidDuration_not: BigInt
+  surplusAuctionBidDuration_gt: BigInt
+  surplusAuctionBidDuration_lt: BigInt
+  surplusAuctionBidDuration_gte: BigInt
+  surplusAuctionBidDuration_lte: BigInt
+  surplusAuctionBidDuration_in: [BigInt!]
+  surplusAuctionBidDuration_not_in: [BigInt!]
+  surplusAuctionBuffer: BigDecimal
+  surplusAuctionBuffer_not: BigDecimal
+  surplusAuctionBuffer_gt: BigDecimal
+  surplusAuctionBuffer_lt: BigDecimal
+  surplusAuctionBuffer_gte: BigDecimal
+  surplusAuctionBuffer_lte: BigDecimal
+  surplusAuctionBuffer_in: [BigDecimal!]
+  surplusAuctionBuffer_not_in: [BigDecimal!]
+  surplusAuctionDuration: BigInt
+  surplusAuctionDuration_not: BigInt
+  surplusAuctionDuration_gt: BigInt
+  surplusAuctionDuration_lt: BigInt
+  surplusAuctionDuration_gte: BigInt
+  surplusAuctionDuration_lte: BigInt
+  surplusAuctionDuration_in: [BigInt!]
+  surplusAuctionDuration_not_in: [BigInt!]
+  surplusAuctionLotSize: BigDecimal
+  surplusAuctionLotSize_not: BigDecimal
+  surplusAuctionLotSize_gt: BigDecimal
+  surplusAuctionLotSize_lt: BigDecimal
+  surplusAuctionLotSize_gte: BigDecimal
+  surplusAuctionLotSize_lte: BigDecimal
+  surplusAuctionLotSize_in: [BigDecimal!]
+  surplusAuctionLotSize_not_in: [BigDecimal!]
+  surplusAuctionMinimumBidIncrease: BigDecimal
+  surplusAuctionMinimumBidIncrease_not: BigDecimal
+  surplusAuctionMinimumBidIncrease_gt: BigDecimal
+  surplusAuctionMinimumBidIncrease_lt: BigDecimal
+  surplusAuctionMinimumBidIncrease_gte: BigDecimal
+  surplusAuctionMinimumBidIncrease_lte: BigDecimal
+  surplusAuctionMinimumBidIncrease_in: [BigDecimal!]
+  surplusAuctionMinimumBidIncrease_not_in: [BigDecimal!]
+  jugVowContract: Bytes
+  jugVowContract_not: Bytes
+  jugVowContract_gt: Bytes
+  jugVowContract_lt: Bytes
+  jugVowContract_gte: Bytes
+  jugVowContract_lte: Bytes
+  jugVowContract_in: [Bytes!]
+  jugVowContract_not_in: [Bytes!]
+  jugVowContract_contains: Bytes
+  jugVowContract_not_contains: Bytes
+  dsrLive: Boolean
+  dsrLive_not: Boolean
+  dsrLive_in: [Boolean!]
+  dsrLive_not_in: [Boolean!]
+  dsrLiveUpdatedAt: BigInt
+  dsrLiveUpdatedAt_not: BigInt
+  dsrLiveUpdatedAt_gt: BigInt
+  dsrLiveUpdatedAt_lt: BigInt
+  dsrLiveUpdatedAt_gte: BigInt
+  dsrLiveUpdatedAt_lte: BigInt
+  dsrLiveUpdatedAt_in: [BigInt!]
+  dsrLiveUpdatedAt_not_in: [BigInt!]
+  potVowContract: Bytes
+  potVowContract_not: Bytes
+  potVowContract_gt: Bytes
+  potVowContract_lt: Bytes
+  potVowContract_gte: Bytes
+  potVowContract_lte: Bytes
+  potVowContract_in: [Bytes!]
+  potVowContract_not_in: [Bytes!]
+  potVowContract_contains: Bytes
+  potVowContract_not_contains: Bytes
+  totalSavingsInPot: BigDecimal
+  totalSavingsInPot_not: BigDecimal
+  totalSavingsInPot_gt: BigDecimal
+  totalSavingsInPot_lt: BigDecimal
+  totalSavingsInPot_gte: BigDecimal
+  totalSavingsInPot_lte: BigDecimal
+  totalSavingsInPot_in: [BigDecimal!]
+  totalSavingsInPot_not_in: [BigDecimal!]
+  rateAccumulator: BigInt
+  rateAccumulator_not: BigInt
+  rateAccumulator_gt: BigInt
+  rateAccumulator_lt: BigInt
+  rateAccumulator_gte: BigInt
+  rateAccumulator_lte: BigInt
+  rateAccumulator_in: [BigInt!]
+  rateAccumulator_not_in: [BigInt!]
+  lastPotDripAt: BigInt
+  lastPotDripAt_not: BigInt
+  lastPotDripAt_gt: BigInt
+  lastPotDripAt_lt: BigInt
+  lastPotDripAt_gte: BigInt
+  lastPotDripAt_lte: BigInt
+  lastPotDripAt_in: [BigInt!]
+  lastPotDripAt_not_in: [BigInt!]
+  maxDaiToCoverAuction: BigDecimal
+  maxDaiToCoverAuction_not: BigDecimal
+  maxDaiToCoverAuction_gt: BigDecimal
+  maxDaiToCoverAuction_lt: BigDecimal
+  maxDaiToCoverAuction_gte: BigDecimal
+  maxDaiToCoverAuction_lte: BigDecimal
+  maxDaiToCoverAuction_in: [BigDecimal!]
+  maxDaiToCoverAuction_not_in: [BigDecimal!]
+  dogVowContract: Bytes
+  dogVowContract_not: Bytes
+  dogVowContract_gt: Bytes
+  dogVowContract_lt: Bytes
+  dogVowContract_gte: Bytes
+  dogVowContract_lte: Bytes
+  dogVowContract_in: [Bytes!]
+  dogVowContract_not_in: [Bytes!]
+  dogVowContract_contains: Bytes
+  dogVowContract_not_contains: Bytes
+  daiTotalSupply: BigDecimal
+  daiTotalSupply_not: BigDecimal
+  daiTotalSupply_gt: BigDecimal
+  daiTotalSupply_lt: BigDecimal
+  daiTotalSupply_gte: BigDecimal
+  daiTotalSupply_lte: BigDecimal
+  daiTotalSupply_in: [BigDecimal!]
+  daiTotalSupply_not_in: [BigDecimal!]
+  totalDaiAmountToCoverDebtAndFees: BigDecimal
+  totalDaiAmountToCoverDebtAndFees_not: BigDecimal
+  totalDaiAmountToCoverDebtAndFees_gt: BigDecimal
+  totalDaiAmountToCoverDebtAndFees_lt: BigDecimal
+  totalDaiAmountToCoverDebtAndFees_gte: BigDecimal
+  totalDaiAmountToCoverDebtAndFees_lte: BigDecimal
+  totalDaiAmountToCoverDebtAndFees_in: [BigDecimal!]
+  totalDaiAmountToCoverDebtAndFees_not_in: [BigDecimal!]
+  saleAuctionStartingPriceFactor: BigDecimal
+  saleAuctionStartingPriceFactor_not: BigDecimal
+  saleAuctionStartingPriceFactor_gt: BigDecimal
+  saleAuctionStartingPriceFactor_lt: BigDecimal
+  saleAuctionStartingPriceFactor_gte: BigDecimal
+  saleAuctionStartingPriceFactor_lte: BigDecimal
+  saleAuctionStartingPriceFactor_in: [BigDecimal!]
+  saleAuctionStartingPriceFactor_not_in: [BigDecimal!]
+  saleAuctionResetTime: BigInt
+  saleAuctionResetTime_not: BigInt
+  saleAuctionResetTime_gt: BigInt
+  saleAuctionResetTime_lt: BigInt
+  saleAuctionResetTime_gte: BigInt
+  saleAuctionResetTime_lte: BigInt
+  saleAuctionResetTime_in: [BigInt!]
+  saleAuctionResetTime_not_in: [BigInt!]
+  saleAuctionDropPercentage: BigDecimal
+  saleAuctionDropPercentage_not: BigDecimal
+  saleAuctionDropPercentage_gt: BigDecimal
+  saleAuctionDropPercentage_lt: BigDecimal
+  saleAuctionDropPercentage_gte: BigDecimal
+  saleAuctionDropPercentage_lte: BigDecimal
+  saleAuctionDropPercentage_in: [BigDecimal!]
+  saleAuctionDropPercentage_not_in: [BigDecimal!]
+  saleAuctionDaiToRaisePercentage: BigDecimal
+  saleAuctionDaiToRaisePercentage_not: BigDecimal
+  saleAuctionDaiToRaisePercentage_gt: BigDecimal
+  saleAuctionDaiToRaisePercentage_lt: BigDecimal
+  saleAuctionDaiToRaisePercentage_gte: BigDecimal
+  saleAuctionDaiToRaisePercentage_lte: BigDecimal
+  saleAuctionDaiToRaisePercentage_in: [BigDecimal!]
+  saleAuctionDaiToRaisePercentage_not_in: [BigDecimal!]
+  saleAuctionFlatFee: BigDecimal
+  saleAuctionFlatFee_not: BigDecimal
+  saleAuctionFlatFee_gt: BigDecimal
+  saleAuctionFlatFee_lt: BigDecimal
+  saleAuctionFlatFee_gte: BigDecimal
+  saleAuctionFlatFee_lte: BigDecimal
+  saleAuctionFlatFee_in: [BigDecimal!]
+  saleAuctionFlatFee_not_in: [BigDecimal!]
+  saleAuctionSpotterContract: Bytes
+  saleAuctionSpotterContract_not: Bytes
+  saleAuctionSpotterContract_gt: Bytes
+  saleAuctionSpotterContract_lt: Bytes
+  saleAuctionSpotterContract_gte: Bytes
+  saleAuctionSpotterContract_lte: Bytes
+  saleAuctionSpotterContract_in: [Bytes!]
+  saleAuctionSpotterContract_not_in: [Bytes!]
+  saleAuctionSpotterContract_contains: Bytes
+  saleAuctionSpotterContract_not_contains: Bytes
+  saleAuctionDogContract: Bytes
+  saleAuctionDogContract_not: Bytes
+  saleAuctionDogContract_gt: Bytes
+  saleAuctionDogContract_lt: Bytes
+  saleAuctionDogContract_gte: Bytes
+  saleAuctionDogContract_lte: Bytes
+  saleAuctionDogContract_in: [Bytes!]
+  saleAuctionDogContract_not_in: [Bytes!]
+  saleAuctionDogContract_contains: Bytes
+  saleAuctionDogContract_not_contains: Bytes
+  saleAuctionVowContract: Bytes
+  saleAuctionVowContract_not: Bytes
+  saleAuctionVowContract_gt: Bytes
+  saleAuctionVowContract_lt: Bytes
+  saleAuctionVowContract_gte: Bytes
+  saleAuctionVowContract_lte: Bytes
+  saleAuctionVowContract_in: [Bytes!]
+  saleAuctionVowContract_not_in: [Bytes!]
+  saleAuctionVowContract_contains: Bytes
+  saleAuctionVowContract_not_contains: Bytes
+  saleAuctionCalcContract: Bytes
+  saleAuctionCalcContract_not: Bytes
+  saleAuctionCalcContract_gt: Bytes
+  saleAuctionCalcContract_lt: Bytes
+  saleAuctionCalcContract_gte: Bytes
+  saleAuctionCalcContract_lte: Bytes
+  saleAuctionCalcContract_in: [Bytes!]
+  saleAuctionCalcContract_not_in: [Bytes!]
+  saleAuctionCalcContract_contains: Bytes
+  saleAuctionCalcContract_not_contains: Bytes
+  secondsBetweenPriceDrops: BigInt
+  secondsBetweenPriceDrops_not: BigInt
+  secondsBetweenPriceDrops_gt: BigInt
+  secondsBetweenPriceDrops_lt: BigInt
+  secondsBetweenPriceDrops_gte: BigInt
+  secondsBetweenPriceDrops_lte: BigInt
+  secondsBetweenPriceDrops_in: [BigInt!]
+  secondsBetweenPriceDrops_not_in: [BigInt!]
+  multiplicatorFactorPerStep: BigDecimal
+  multiplicatorFactorPerStep_not: BigDecimal
+  multiplicatorFactorPerStep_gt: BigDecimal
+  multiplicatorFactorPerStep_lt: BigDecimal
+  multiplicatorFactorPerStep_gte: BigDecimal
+  multiplicatorFactorPerStep_lte: BigDecimal
+  multiplicatorFactorPerStep_in: [BigDecimal!]
+  multiplicatorFactorPerStep_not_in: [BigDecimal!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [SystemState_filter]
+  or: [SystemState_filter]
+}
+
+enum SystemState_orderBy {
+  id
+  totalMkr
+  totalDebt
+  totalSystemDebt
+  systemDebt
+  systemDebtInQueue
+  collateralCount
+  userProxyCount
+  unmanagedVaultCount
+  vaultCount
+  baseStabilityFee
+  savingsRate
+  totalDebtCeiling
+  vowFlapperContract
+  vowFlopperContract
+  debtAuctionBidDuration
+  debtAuctionBidSize
+  debtAuctionDelay
+  debtAuctionDuration
+  debtAuctionInitialLotSize
+  debtAuctionLotSizeIncrease
+  debtAuctionMinimumBidIncrease
+  debtOnAuctionTotalAmount
+  surplusAuctionBidDuration
+  surplusAuctionBuffer
+  surplusAuctionDuration
+  surplusAuctionLotSize
+  surplusAuctionMinimumBidIncrease
+  jugVowContract
+  dsrLive
+  dsrLiveUpdatedAt
+  potVowContract
+  totalSavingsInPot
+  rateAccumulator
+  lastPotDripAt
+  maxDaiToCoverAuction
+  dogVowContract
+  daiTotalSupply
+  totalDaiAmountToCoverDebtAndFees
+  saleAuctionStartingPriceFactor
+  saleAuctionResetTime
+  saleAuctionDropPercentage
+  saleAuctionDaiToRaisePercentage
+  saleAuctionFlatFee
+  saleAuctionSpotterContract
+  saleAuctionDogContract
+  saleAuctionVowContract
+  saleAuctionCalcContract
+  secondsBetweenPriceDrops
+  multiplicatorFactorPerStep
+}
+
+"A string representation of microseconds UNIX timestamp (16 digits)\n"
+scalar Timestamp
+
+""" Vault owner """
+type User {
+  """ Equals to account address """
+  id: ID!
+
+  """ Account address """
+  address: Bytes!
+
+  """ User's DAI in the Vault"""
+  totalVaultDai: BigDecimal!
+
+  """ User's Total Erc20.DAI """
+  totalDaiBalance: BigDecimal!
+
+  """ The user savings in DAI (Pot#pie) """
+  savings: BigDecimal!
+
+  """ Total maker balance """
+  totalMkrBalance: BigDecimal!
+
+  """ Number of user proxies associated to the user """
+  proxyCount: BigInt!
+
+  """ Number of vaults opened by the user """
+  vaultCount: BigInt!
+
+  """ User proxies. Up to one per collateral type """
+  proxies(skip: Int = 0, first: Int = 100, orderBy: UserProxy_orderBy, orderDirection: OrderDirection, where: UserProxy_filter): [UserProxy!]
+
+  """ User's vaults """
+  vaults(skip: Int = 0, first: Int = 100, orderBy: Vault_orderBy, orderDirection: OrderDirection, where: Vault_filter): [Vault!]
+
+  """ User's collaterals """
+  collaterals(skip: Int = 0, first: Int = 100, orderBy: Collateral_orderBy, orderDirection: OrderDirection, where: Collateral_filter): [Collateral!]
+
+  """ User's Outgoing Transfers for DAI """
+  daiOutgoingTransfers(skip: Int = 0, first: Int = 100, orderBy: DaiTransfer_orderBy, orderDirection: OrderDirection, where: DaiTransfer_filter): [DaiTransfer!]
+
+  """ User's Incoming Transfers for DAI """
+  daiIncomingTransfers(skip: Int = 0, first: Int = 100, orderBy: DaiTransfer_orderBy, orderDirection: OrderDirection, where: DaiTransfer_filter): [DaiTransfer!]
+
+  """ User's dai approvals """
+  daiApprovals(skip: Int = 0, first: Int = 100, orderBy: DaiApproval_orderBy, orderDirection: OrderDirection, where: DaiApproval_filter): [DaiApproval!]
+
+  """ User's mkr outgoing transfers """
+  mkrOutgoingTransfers(skip: Int = 0, first: Int = 100, orderBy: MkrTransfer_orderBy, orderDirection: OrderDirection, where: MkrTransfer_filter): [MkrTransfer!]
+
+  """ User's mkr incoming transfers """
+  mkrIncomingTransfers(skip: Int = 0, first: Int = 100, orderBy: MkrTransfer_orderBy, orderDirection: OrderDirection, where: MkrTransfer_filter): [MkrTransfer!]
+
+  """ User's mkr approvals """
+  mkrApprovals(skip: Int = 0, first: Int = 100, orderBy: MkrApproval_orderBy, orderDirection: OrderDirection, where: MkrApproval_filter): [MkrApproval!]
+}
+
+""" Contract used to execute transactions and sequences of transactions on behalf of a user 
+"""
+type UserProxy {
+  """ Proxy address """
+  id: ID!
+
+  """ Proxy contract address """
+  address: Bytes!
+
+  """ Cache contract address """
+  cache: Bytes!
+
+  """ User reference """
+  owner: User!
+}
+
+input UserProxy_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  address: Bytes
+  address_not: Bytes
+  address_gt: Bytes
+  address_lt: Bytes
+  address_gte: Bytes
+  address_lte: Bytes
+  address_in: [Bytes!]
+  address_not_in: [Bytes!]
+  address_contains: Bytes
+  address_not_contains: Bytes
+  cache: Bytes
+  cache_not: Bytes
+  cache_gt: Bytes
+  cache_lt: Bytes
+  cache_gte: Bytes
+  cache_lte: Bytes
+  cache_in: [Bytes!]
+  cache_not_in: [Bytes!]
+  cache_contains: Bytes
+  cache_not_contains: Bytes
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
+  owner_: User_filter
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [UserProxy_filter]
+  or: [UserProxy_filter]
+}
+
+enum UserProxy_orderBy {
+  id
+  address
+  cache
+  owner
+  owner__id
+  owner__address
+  owner__totalVaultDai
+  owner__totalDaiBalance
+  owner__savings
+  owner__totalMkrBalance
+  owner__proxyCount
+  owner__vaultCount
+}
+
+input User_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  address: Bytes
+  address_not: Bytes
+  address_gt: Bytes
+  address_lt: Bytes
+  address_gte: Bytes
+  address_lte: Bytes
+  address_in: [Bytes!]
+  address_not_in: [Bytes!]
+  address_contains: Bytes
+  address_not_contains: Bytes
+  totalVaultDai: BigDecimal
+  totalVaultDai_not: BigDecimal
+  totalVaultDai_gt: BigDecimal
+  totalVaultDai_lt: BigDecimal
+  totalVaultDai_gte: BigDecimal
+  totalVaultDai_lte: BigDecimal
+  totalVaultDai_in: [BigDecimal!]
+  totalVaultDai_not_in: [BigDecimal!]
+  totalDaiBalance: BigDecimal
+  totalDaiBalance_not: BigDecimal
+  totalDaiBalance_gt: BigDecimal
+  totalDaiBalance_lt: BigDecimal
+  totalDaiBalance_gte: BigDecimal
+  totalDaiBalance_lte: BigDecimal
+  totalDaiBalance_in: [BigDecimal!]
+  totalDaiBalance_not_in: [BigDecimal!]
+  savings: BigDecimal
+  savings_not: BigDecimal
+  savings_gt: BigDecimal
+  savings_lt: BigDecimal
+  savings_gte: BigDecimal
+  savings_lte: BigDecimal
+  savings_in: [BigDecimal!]
+  savings_not_in: [BigDecimal!]
+  totalMkrBalance: BigDecimal
+  totalMkrBalance_not: BigDecimal
+  totalMkrBalance_gt: BigDecimal
+  totalMkrBalance_lt: BigDecimal
+  totalMkrBalance_gte: BigDecimal
+  totalMkrBalance_lte: BigDecimal
+  totalMkrBalance_in: [BigDecimal!]
+  totalMkrBalance_not_in: [BigDecimal!]
+  proxyCount: BigInt
+  proxyCount_not: BigInt
+  proxyCount_gt: BigInt
+  proxyCount_lt: BigInt
+  proxyCount_gte: BigInt
+  proxyCount_lte: BigInt
+  proxyCount_in: [BigInt!]
+  proxyCount_not_in: [BigInt!]
+  vaultCount: BigInt
+  vaultCount_not: BigInt
+  vaultCount_gt: BigInt
+  vaultCount_lt: BigInt
+  vaultCount_gte: BigInt
+  vaultCount_lte: BigInt
+  vaultCount_in: [BigInt!]
+  vaultCount_not_in: [BigInt!]
+  proxies_: UserProxy_filter
+  vaults_: Vault_filter
+  collaterals_: Collateral_filter
+  daiOutgoingTransfers_: DaiTransfer_filter
+  daiIncomingTransfers_: DaiTransfer_filter
+  daiApprovals_: DaiApproval_filter
+  mkrOutgoingTransfers_: MkrTransfer_filter
+  mkrIncomingTransfers_: MkrTransfer_filter
+  mkrApprovals_: MkrApproval_filter
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [User_filter]
+  or: [User_filter]
+}
+
+enum User_orderBy {
+  id
+  address
+  totalVaultDai
+  totalDaiBalance
+  savings
+  totalMkrBalance
+  proxyCount
+  vaultCount
+  proxies
+  vaults
+  collaterals
+  daiOutgoingTransfers
+  daiIncomingTransfers
+  daiApprovals
+  mkrOutgoingTransfers
+  mkrIncomingTransfers
+  mkrApprovals
+}
+
+""" Maker Vault (formerly collateralized debt position or CDPs) """
+type Vault {
+  """ Equals to: <urn>-<ilk>"""
+  id: ID!
+
+  """ CDP ID if this vault was created through the manager (CdpManager) """
+  cdpId: BigInt
+
+  """ Collateral type associated to this vault (ilk) """
+  collateralType: CollateralType!
+
+  """ Assets locked as collateral (ink) """
+  collateral: BigDecimal!
+
+  """ Outstanding debt (art) [DAI] """
+  debt: BigDecimal!
+
+  """ Address of this vault's UrnHandler instance """
+  handler: Bytes!
+
+  """ Address of vault's owner """
+  owner: User!
+
+  """ Timestamp of the block in which this vault was opened [seconds] """
+  openedAt: BigInt
+
+  """ Block number in which this vault was opened """
+  openedAtBlock: BigInt
+
+  """ Transaction hash in which this vault was opened """
+  openedAtTransaction: Bytes
+
+  """ Timestamp of the block in which this vault was last modified [seconds] 
+  """
+  updatedAt: BigInt
+
+  """ Block number in which this vault was last modified """
+  updatedAtBlock: BigInt
+
+  """ Transaction hash in which this vault was last modified """
+  updatedAtTransaction: Bytes
+
+  """ Vault action history """
+  logs(skip: Int = 0, first: Int = 100, orderBy: VaultLog_orderBy, orderDirection: OrderDirection, where: VaultLog_filter): [VaultLog!]
+}
+
+type VaultCollateralChangeLog implements VaultLog {
+  id: ID!
+  vault: Vault!
+  collateralBefore: BigDecimal!
+  collateralAfter: BigDecimal!
+  collateralDiff: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+input VaultCollateralChangeLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  vault: String
+  vault_not: String
+  vault_gt: String
+  vault_lt: String
+  vault_gte: String
+  vault_lte: String
+  vault_in: [String!]
+  vault_not_in: [String!]
+  vault_contains: String
+  vault_contains_nocase: String
+  vault_not_contains: String
+  vault_not_contains_nocase: String
+  vault_starts_with: String
+  vault_starts_with_nocase: String
+  vault_not_starts_with: String
+  vault_not_starts_with_nocase: String
+  vault_ends_with: String
+  vault_ends_with_nocase: String
+  vault_not_ends_with: String
+  vault_not_ends_with_nocase: String
+  vault_: Vault_filter
+  collateralBefore: BigDecimal
+  collateralBefore_not: BigDecimal
+  collateralBefore_gt: BigDecimal
+  collateralBefore_lt: BigDecimal
+  collateralBefore_gte: BigDecimal
+  collateralBefore_lte: BigDecimal
+  collateralBefore_in: [BigDecimal!]
+  collateralBefore_not_in: [BigDecimal!]
+  collateralAfter: BigDecimal
+  collateralAfter_not: BigDecimal
+  collateralAfter_gt: BigDecimal
+  collateralAfter_lt: BigDecimal
+  collateralAfter_gte: BigDecimal
+  collateralAfter_lte: BigDecimal
+  collateralAfter_in: [BigDecimal!]
+  collateralAfter_not_in: [BigDecimal!]
+  collateralDiff: BigDecimal
+  collateralDiff_not: BigDecimal
+  collateralDiff_gt: BigDecimal
+  collateralDiff_lt: BigDecimal
+  collateralDiff_gte: BigDecimal
+  collateralDiff_lte: BigDecimal
+  collateralDiff_in: [BigDecimal!]
+  collateralDiff_not_in: [BigDecimal!]
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [VaultCollateralChangeLog_filter]
+  or: [VaultCollateralChangeLog_filter]
+}
+
+enum VaultCollateralChangeLog_orderBy {
+  id
+  vault
+  vault__id
+  vault__cdpId
+  vault__collateral
+  vault__debt
+  vault__handler
+  vault__openedAt
+  vault__openedAtBlock
+  vault__openedAtTransaction
+  vault__updatedAt
+  vault__updatedAtBlock
+  vault__updatedAtTransaction
+  collateralBefore
+  collateralAfter
+  collateralDiff
+  block
+  timestamp
+  transaction
+}
+
+type VaultCreationLog implements VaultLog {
+  id: ID!
+  vault: Vault!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+input VaultCreationLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  vault: String
+  vault_not: String
+  vault_gt: String
+  vault_lt: String
+  vault_gte: String
+  vault_lte: String
+  vault_in: [String!]
+  vault_not_in: [String!]
+  vault_contains: String
+  vault_contains_nocase: String
+  vault_not_contains: String
+  vault_not_contains_nocase: String
+  vault_starts_with: String
+  vault_starts_with_nocase: String
+  vault_not_starts_with: String
+  vault_not_starts_with_nocase: String
+  vault_ends_with: String
+  vault_ends_with_nocase: String
+  vault_not_ends_with: String
+  vault_not_ends_with_nocase: String
+  vault_: Vault_filter
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [VaultCreationLog_filter]
+  or: [VaultCreationLog_filter]
+}
+
+enum VaultCreationLog_orderBy {
+  id
+  vault
+  vault__id
+  vault__cdpId
+  vault__collateral
+  vault__debt
+  vault__handler
+  vault__openedAt
+  vault__openedAtBlock
+  vault__openedAtTransaction
+  vault__updatedAt
+  vault__updatedAtBlock
+  vault__updatedAtTransaction
+  block
+  timestamp
+  transaction
+}
+
+type VaultDebtChangeLog implements VaultLog {
+  id: ID!
+  vault: Vault!
+  debtBefore: BigDecimal!
+  debtAfter: BigDecimal!
+  debtDiff: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+input VaultDebtChangeLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  vault: String
+  vault_not: String
+  vault_gt: String
+  vault_lt: String
+  vault_gte: String
+  vault_lte: String
+  vault_in: [String!]
+  vault_not_in: [String!]
+  vault_contains: String
+  vault_contains_nocase: String
+  vault_not_contains: String
+  vault_not_contains_nocase: String
+  vault_starts_with: String
+  vault_starts_with_nocase: String
+  vault_not_starts_with: String
+  vault_not_starts_with_nocase: String
+  vault_ends_with: String
+  vault_ends_with_nocase: String
+  vault_not_ends_with: String
+  vault_not_ends_with_nocase: String
+  vault_: Vault_filter
+  debtBefore: BigDecimal
+  debtBefore_not: BigDecimal
+  debtBefore_gt: BigDecimal
+  debtBefore_lt: BigDecimal
+  debtBefore_gte: BigDecimal
+  debtBefore_lte: BigDecimal
+  debtBefore_in: [BigDecimal!]
+  debtBefore_not_in: [BigDecimal!]
+  debtAfter: BigDecimal
+  debtAfter_not: BigDecimal
+  debtAfter_gt: BigDecimal
+  debtAfter_lt: BigDecimal
+  debtAfter_gte: BigDecimal
+  debtAfter_lte: BigDecimal
+  debtAfter_in: [BigDecimal!]
+  debtAfter_not_in: [BigDecimal!]
+  debtDiff: BigDecimal
+  debtDiff_not: BigDecimal
+  debtDiff_gt: BigDecimal
+  debtDiff_lt: BigDecimal
+  debtDiff_gte: BigDecimal
+  debtDiff_lte: BigDecimal
+  debtDiff_in: [BigDecimal!]
+  debtDiff_not_in: [BigDecimal!]
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [VaultDebtChangeLog_filter]
+  or: [VaultDebtChangeLog_filter]
+}
+
+enum VaultDebtChangeLog_orderBy {
+  id
+  vault
+  vault__id
+  vault__cdpId
+  vault__collateral
+  vault__debt
+  vault__handler
+  vault__openedAt
+  vault__openedAtBlock
+  vault__openedAtTransaction
+  vault__updatedAt
+  vault__updatedAtBlock
+  vault__updatedAtTransaction
+  debtBefore
+  debtAfter
+  debtDiff
+  block
+  timestamp
+  transaction
+}
+
+interface VaultLog {
+  vault: Vault!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+input VaultLog_filter {
+  vault: String
+  vault_not: String
+  vault_gt: String
+  vault_lt: String
+  vault_gte: String
+  vault_lte: String
+  vault_in: [String!]
+  vault_not_in: [String!]
+  vault_contains: String
+  vault_contains_nocase: String
+  vault_not_contains: String
+  vault_not_contains_nocase: String
+  vault_starts_with: String
+  vault_starts_with_nocase: String
+  vault_not_starts_with: String
+  vault_not_starts_with_nocase: String
+  vault_ends_with: String
+  vault_ends_with_nocase: String
+  vault_not_ends_with: String
+  vault_not_ends_with_nocase: String
+  vault_: Vault_filter
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [VaultLog_filter]
+  or: [VaultLog_filter]
+}
+
+enum VaultLog_orderBy {
+  vault
+  vault__id
+  vault__cdpId
+  vault__collateral
+  vault__debt
+  vault__handler
+  vault__openedAt
+  vault__openedAtBlock
+  vault__openedAtTransaction
+  vault__updatedAt
+  vault__updatedAtBlock
+  vault__updatedAtTransaction
+  block
+  timestamp
+  transaction
+}
+
+type VaultSplitChangeLog implements VaultLog {
+  id: ID!
+  vault: Vault!
+  src: Bytes!
+  dst: Bytes!
+  collateralToMove: BigDecimal!
+  debtToMove: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+input VaultSplitChangeLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  vault: String
+  vault_not: String
+  vault_gt: String
+  vault_lt: String
+  vault_gte: String
+  vault_lte: String
+  vault_in: [String!]
+  vault_not_in: [String!]
+  vault_contains: String
+  vault_contains_nocase: String
+  vault_not_contains: String
+  vault_not_contains_nocase: String
+  vault_starts_with: String
+  vault_starts_with_nocase: String
+  vault_not_starts_with: String
+  vault_not_starts_with_nocase: String
+  vault_ends_with: String
+  vault_ends_with_nocase: String
+  vault_not_ends_with: String
+  vault_not_ends_with_nocase: String
+  vault_: Vault_filter
+  src: Bytes
+  src_not: Bytes
+  src_gt: Bytes
+  src_lt: Bytes
+  src_gte: Bytes
+  src_lte: Bytes
+  src_in: [Bytes!]
+  src_not_in: [Bytes!]
+  src_contains: Bytes
+  src_not_contains: Bytes
+  dst: Bytes
+  dst_not: Bytes
+  dst_gt: Bytes
+  dst_lt: Bytes
+  dst_gte: Bytes
+  dst_lte: Bytes
+  dst_in: [Bytes!]
+  dst_not_in: [Bytes!]
+  dst_contains: Bytes
+  dst_not_contains: Bytes
+  collateralToMove: BigDecimal
+  collateralToMove_not: BigDecimal
+  collateralToMove_gt: BigDecimal
+  collateralToMove_lt: BigDecimal
+  collateralToMove_gte: BigDecimal
+  collateralToMove_lte: BigDecimal
+  collateralToMove_in: [BigDecimal!]
+  collateralToMove_not_in: [BigDecimal!]
+  debtToMove: BigDecimal
+  debtToMove_not: BigDecimal
+  debtToMove_gt: BigDecimal
+  debtToMove_lt: BigDecimal
+  debtToMove_gte: BigDecimal
+  debtToMove_lte: BigDecimal
+  debtToMove_in: [BigDecimal!]
+  debtToMove_not_in: [BigDecimal!]
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [VaultSplitChangeLog_filter]
+  or: [VaultSplitChangeLog_filter]
+}
+
+enum VaultSplitChangeLog_orderBy {
+  id
+  vault
+  vault__id
+  vault__cdpId
+  vault__collateral
+  vault__debt
+  vault__handler
+  vault__openedAt
+  vault__openedAtBlock
+  vault__openedAtTransaction
+  vault__updatedAt
+  vault__updatedAtBlock
+  vault__updatedAtTransaction
+  src
+  dst
+  collateralToMove
+  debtToMove
+  block
+  timestamp
+  transaction
+}
+
+type VaultTransferChangeLog implements VaultLog {
+  id: ID!
+  vault: Vault!
+  previousOwner: User!
+  nextOwner: User!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+input VaultTransferChangeLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  vault: String
+  vault_not: String
+  vault_gt: String
+  vault_lt: String
+  vault_gte: String
+  vault_lte: String
+  vault_in: [String!]
+  vault_not_in: [String!]
+  vault_contains: String
+  vault_contains_nocase: String
+  vault_not_contains: String
+  vault_not_contains_nocase: String
+  vault_starts_with: String
+  vault_starts_with_nocase: String
+  vault_not_starts_with: String
+  vault_not_starts_with_nocase: String
+  vault_ends_with: String
+  vault_ends_with_nocase: String
+  vault_not_ends_with: String
+  vault_not_ends_with_nocase: String
+  vault_: Vault_filter
+  previousOwner: String
+  previousOwner_not: String
+  previousOwner_gt: String
+  previousOwner_lt: String
+  previousOwner_gte: String
+  previousOwner_lte: String
+  previousOwner_in: [String!]
+  previousOwner_not_in: [String!]
+  previousOwner_contains: String
+  previousOwner_contains_nocase: String
+  previousOwner_not_contains: String
+  previousOwner_not_contains_nocase: String
+  previousOwner_starts_with: String
+  previousOwner_starts_with_nocase: String
+  previousOwner_not_starts_with: String
+  previousOwner_not_starts_with_nocase: String
+  previousOwner_ends_with: String
+  previousOwner_ends_with_nocase: String
+  previousOwner_not_ends_with: String
+  previousOwner_not_ends_with_nocase: String
+  previousOwner_: User_filter
+  nextOwner: String
+  nextOwner_not: String
+  nextOwner_gt: String
+  nextOwner_lt: String
+  nextOwner_gte: String
+  nextOwner_lte: String
+  nextOwner_in: [String!]
+  nextOwner_not_in: [String!]
+  nextOwner_contains: String
+  nextOwner_contains_nocase: String
+  nextOwner_not_contains: String
+  nextOwner_not_contains_nocase: String
+  nextOwner_starts_with: String
+  nextOwner_starts_with_nocase: String
+  nextOwner_not_starts_with: String
+  nextOwner_not_starts_with_nocase: String
+  nextOwner_ends_with: String
+  nextOwner_ends_with_nocase: String
+  nextOwner_not_ends_with: String
+  nextOwner_not_ends_with_nocase: String
+  nextOwner_: User_filter
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [VaultTransferChangeLog_filter]
+  or: [VaultTransferChangeLog_filter]
+}
+
+enum VaultTransferChangeLog_orderBy {
+  id
+  vault
+  vault__id
+  vault__cdpId
+  vault__collateral
+  vault__debt
+  vault__handler
+  vault__openedAt
+  vault__openedAtBlock
+  vault__openedAtTransaction
+  vault__updatedAt
+  vault__updatedAtBlock
+  vault__updatedAtTransaction
+  previousOwner
+  previousOwner__id
+  previousOwner__address
+  previousOwner__totalVaultDai
+  previousOwner__totalDaiBalance
+  previousOwner__savings
+  previousOwner__totalMkrBalance
+  previousOwner__proxyCount
+  previousOwner__vaultCount
+  nextOwner
+  nextOwner__id
+  nextOwner__address
+  nextOwner__totalVaultDai
+  nextOwner__totalDaiBalance
+  nextOwner__savings
+  nextOwner__totalMkrBalance
+  nextOwner__proxyCount
+  nextOwner__vaultCount
+  block
+  timestamp
+  transaction
+}
+
+input Vault_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  cdpId: BigInt
+  cdpId_not: BigInt
+  cdpId_gt: BigInt
+  cdpId_lt: BigInt
+  cdpId_gte: BigInt
+  cdpId_lte: BigInt
+  cdpId_in: [BigInt!]
+  cdpId_not_in: [BigInt!]
+  collateralType: String
+  collateralType_not: String
+  collateralType_gt: String
+  collateralType_lt: String
+  collateralType_gte: String
+  collateralType_lte: String
+  collateralType_in: [String!]
+  collateralType_not_in: [String!]
+  collateralType_contains: String
+  collateralType_contains_nocase: String
+  collateralType_not_contains: String
+  collateralType_not_contains_nocase: String
+  collateralType_starts_with: String
+  collateralType_starts_with_nocase: String
+  collateralType_not_starts_with: String
+  collateralType_not_starts_with_nocase: String
+  collateralType_ends_with: String
+  collateralType_ends_with_nocase: String
+  collateralType_not_ends_with: String
+  collateralType_not_ends_with_nocase: String
+  collateralType_: CollateralType_filter
+  collateral: BigDecimal
+  collateral_not: BigDecimal
+  collateral_gt: BigDecimal
+  collateral_lt: BigDecimal
+  collateral_gte: BigDecimal
+  collateral_lte: BigDecimal
+  collateral_in: [BigDecimal!]
+  collateral_not_in: [BigDecimal!]
+  debt: BigDecimal
+  debt_not: BigDecimal
+  debt_gt: BigDecimal
+  debt_lt: BigDecimal
+  debt_gte: BigDecimal
+  debt_lte: BigDecimal
+  debt_in: [BigDecimal!]
+  debt_not_in: [BigDecimal!]
+  handler: Bytes
+  handler_not: Bytes
+  handler_gt: Bytes
+  handler_lt: Bytes
+  handler_gte: Bytes
+  handler_lte: Bytes
+  handler_in: [Bytes!]
+  handler_not_in: [Bytes!]
+  handler_contains: Bytes
+  handler_not_contains: Bytes
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
+  owner_: User_filter
+  openedAt: BigInt
+  openedAt_not: BigInt
+  openedAt_gt: BigInt
+  openedAt_lt: BigInt
+  openedAt_gte: BigInt
+  openedAt_lte: BigInt
+  openedAt_in: [BigInt!]
+  openedAt_not_in: [BigInt!]
+  openedAtBlock: BigInt
+  openedAtBlock_not: BigInt
+  openedAtBlock_gt: BigInt
+  openedAtBlock_lt: BigInt
+  openedAtBlock_gte: BigInt
+  openedAtBlock_lte: BigInt
+  openedAtBlock_in: [BigInt!]
+  openedAtBlock_not_in: [BigInt!]
+  openedAtTransaction: Bytes
+  openedAtTransaction_not: Bytes
+  openedAtTransaction_gt: Bytes
+  openedAtTransaction_lt: Bytes
+  openedAtTransaction_gte: Bytes
+  openedAtTransaction_lte: Bytes
+  openedAtTransaction_in: [Bytes!]
+  openedAtTransaction_not_in: [Bytes!]
+  openedAtTransaction_contains: Bytes
+  openedAtTransaction_not_contains: Bytes
+  updatedAt: BigInt
+  updatedAt_not: BigInt
+  updatedAt_gt: BigInt
+  updatedAt_lt: BigInt
+  updatedAt_gte: BigInt
+  updatedAt_lte: BigInt
+  updatedAt_in: [BigInt!]
+  updatedAt_not_in: [BigInt!]
+  updatedAtBlock: BigInt
+  updatedAtBlock_not: BigInt
+  updatedAtBlock_gt: BigInt
+  updatedAtBlock_lt: BigInt
+  updatedAtBlock_gte: BigInt
+  updatedAtBlock_lte: BigInt
+  updatedAtBlock_in: [BigInt!]
+  updatedAtBlock_not_in: [BigInt!]
+  updatedAtTransaction: Bytes
+  updatedAtTransaction_not: Bytes
+  updatedAtTransaction_gt: Bytes
+  updatedAtTransaction_lt: Bytes
+  updatedAtTransaction_gte: Bytes
+  updatedAtTransaction_lte: Bytes
+  updatedAtTransaction_in: [Bytes!]
+  updatedAtTransaction_not_in: [Bytes!]
+  updatedAtTransaction_contains: Bytes
+  updatedAtTransaction_not_contains: Bytes
+  logs_: VaultLog_filter
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [Vault_filter]
+  or: [Vault_filter]
+}
+
+enum Vault_orderBy {
+  id
+  cdpId
+  collateralType
+  collateralType__id
+  collateralType__debtCeiling
+  collateralType__debtNormalized
+  collateralType__rate
+  collateralType__totalCollateral
+  collateralType__totalDebt
+  collateralType__liquidationLotSize
+  collateralType__liquidationPenalty
+  collateralType__liquidationRatio
+  collateralType__daiAmountToCoverDebtAndFees
+  collateralType__maxDaiToCoverAuction
+  collateralType__liquidatorAddress
+  collateralType__stabilityFee
+  collateralType__stabilityFeeUpdatedAt
+  collateralType__vaultDebtFloor
+  collateralType__vaultCount
+  collateralType__unmanagedVaultCount
+  collateralType__addedAt
+  collateralType__addedAtBlock
+  collateralType__addedAtTransaction
+  collateralType__updatedAt
+  collateralType__updatedAtBlock
+  collateralType__updatedAtTransaction
+  collateral
+  debt
+  handler
+  owner
+  owner__id
+  owner__address
+  owner__totalVaultDai
+  owner__totalDaiBalance
+  owner__savings
+  owner__totalMkrBalance
+  owner__proxyCount
+  owner__vaultCount
+  openedAt
+  openedAtBlock
+  openedAtTransaction
+  updatedAt
+  updatedAtBlock
+  updatedAtTransaction
+  logs
+}
+
+type VowFlapLog {
+  id: ID!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+
+  """ bump """
+  surplusAuctionLotSize: BigDecimal!
+}
+
+input VowFlapLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+  surplusAuctionLotSize: BigDecimal
+  surplusAuctionLotSize_not: BigDecimal
+  surplusAuctionLotSize_gt: BigDecimal
+  surplusAuctionLotSize_lt: BigDecimal
+  surplusAuctionLotSize_gte: BigDecimal
+  surplusAuctionLotSize_lte: BigDecimal
+  surplusAuctionLotSize_in: [BigDecimal!]
+  surplusAuctionLotSize_not_in: [BigDecimal!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [VowFlapLog_filter]
+  or: [VowFlapLog_filter]
+}
+
+enum VowFlapLog_orderBy {
+  id
+  block
+  timestamp
+  transaction
+  surplusAuctionLotSize
+}
+
+type VowFlopLog {
+  id: ID!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+
+  """ address(this) """
+  sourceContract: Bytes!
+
+  """ dump """
+  debtAuctionLotSize: BigDecimal!
+
+  """ sump """
+  debtAuctionBidSize: BigDecimal!
+}
+
+input VowFlopLog_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  block: BigInt
+  block_not: BigInt
+  block_gt: BigInt
+  block_lt: BigInt
+  block_gte: BigInt
+  block_lte: BigInt
+  block_in: [BigInt!]
+  block_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  transaction: Bytes
+  transaction_not: Bytes
+  transaction_gt: Bytes
+  transaction_lt: Bytes
+  transaction_gte: Bytes
+  transaction_lte: Bytes
+  transaction_in: [Bytes!]
+  transaction_not_in: [Bytes!]
+  transaction_contains: Bytes
+  transaction_not_contains: Bytes
+  sourceContract: Bytes
+  sourceContract_not: Bytes
+  sourceContract_gt: Bytes
+  sourceContract_lt: Bytes
+  sourceContract_gte: Bytes
+  sourceContract_lte: Bytes
+  sourceContract_in: [Bytes!]
+  sourceContract_not_in: [Bytes!]
+  sourceContract_contains: Bytes
+  sourceContract_not_contains: Bytes
+  debtAuctionLotSize: BigDecimal
+  debtAuctionLotSize_not: BigDecimal
+  debtAuctionLotSize_gt: BigDecimal
+  debtAuctionLotSize_lt: BigDecimal
+  debtAuctionLotSize_gte: BigDecimal
+  debtAuctionLotSize_lte: BigDecimal
+  debtAuctionLotSize_in: [BigDecimal!]
+  debtAuctionLotSize_not_in: [BigDecimal!]
+  debtAuctionBidSize: BigDecimal
+  debtAuctionBidSize_not: BigDecimal
+  debtAuctionBidSize_gt: BigDecimal
+  debtAuctionBidSize_lt: BigDecimal
+  debtAuctionBidSize_gte: BigDecimal
+  debtAuctionBidSize_lte: BigDecimal
+  debtAuctionBidSize_in: [BigDecimal!]
+  debtAuctionBidSize_not_in: [BigDecimal!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [VowFlopLog_filter]
+  or: [VowFlopLog_filter]
+}
+
+enum VowFlopLog_orderBy {
+  id
+  block
+  timestamp
+  transaction
+  sourceContract
+  debtAuctionLotSize
+  debtAuctionBidSize
+}
+
+type _Block_ {
+  """The hash of the block"""
+  hash: Bytes
+
+  """The block number"""
+  number: Int!
+
+  """Integer representation of the timestamp stored in blocks for the chain"""
+  timestamp: Int
+
+  """The hash of the parent block"""
+  parentHash: Bytes
+}
+
+"""The type for the top-level _meta field"""
+type _Meta_ {
+  "Information about a specific subgraph block. The hash of the block\nwill be null if the _meta field has a block constraint that asks for\na block number. It will be filled if the _meta field has no block constraint\nand therefore asks for the latest  block\n"
+  block: _Block_!
+
+  """The deployment ID"""
+  deployment: String!
+
+  """If `true`, the subgraph encountered indexing errors at some past block"""
+  hasIndexingErrors: Boolean!
+}
+
+enum _SubgraphErrorPolicy_ {
+  """Data will be returned even if the subgraph has indexing errors"""
+  allow
+
+  """
+  If the subgraph has indexing errors, data will be omitted. The default.
+  """
+  deny
+}
