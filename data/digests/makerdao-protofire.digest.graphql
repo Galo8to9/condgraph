@@ -1,0 +1,586 @@
+# Condensed subgraph schema.
+# Filters and ordering follow standard subgraph conventions and are omitted here:
+#   where: { <field>: value, <field>_gt: value, <field>_lt: value,
+#            <field>_gte: value, <field>_lte: value, <field>_in: [values],
+#            <field>_not: value, <field>_contains: substring, ... }
+#   orderBy: <any field on the entity>
+#   orderDirection: asc | desc
+#   first: <n>   skip: <n>   block: { number: <n> }
+# Apply these to any list query on the entities below.
+
+
+scalar BigDecimal
+scalar BigInt
+scalar Bytes
+
+enum Aggregation_interval {
+  hour
+  day
+}
+
+enum Direction {
+  IN
+  OUT
+}
+
+" Collateral tokens (Gem)"
+type Collateral {
+  " Collateral tokens (Gem) : ${user.id}-${collateralType.id} "
+  id: ID!
+  " Collateral type "
+  type: CollateralType!
+  " Account that owns this Collateral "
+  owner: User!
+  " Amount of collateral "
+  amount: BigDecimal!
+  " Timestamp of the block in which this collateral was created [seconds] "
+  createdAt: BigInt
+  " Block number in which this collateral was created "
+  createdAtBlock: BigInt
+  " Transaction hash in which this collateral was created "
+  createdAtTransaction: Bytes
+  " Timestamp of the block in which this collateral was last modified [seconds] "
+  updatedAt: BigInt
+  " Block number in which this collateral was last modified "
+  updatedAtBlock: BigInt
+  " Transaction hash in which this collateral was last modified "
+  updatedAtTransaction: Bytes
+  " UserCollateral action history "
+  logs: [CollateralLog!]
+}
+
+type CollateralChangeLog {
+  id: ID!
+  collateral: Collateral!
+  collateralBefore: BigDecimal!
+  collateralAfter: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+" Collateral market price at a given block "
+type CollateralPrice {
+  " Equals to: <block_number>-<ilk>"
+  id: ID!
+  " Block number "
+  block: BigInt!
+  " Collateral type "
+  collateral: CollateralType!
+  " Market price with safety margin (current price less liquidation ratio) [USD] (spot) "
+  spotPrice: BigDecimal!
+  " Timestamp in seconds "
+  timestamp: BigInt!
+  " Price value "
+  value: BigDecimal!
+}
+
+type CollateralPriceUpdateLog {
+  id: ID!
+  collateral: Collateral!
+  newValue: BigDecimal!
+  newSpotPrice: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type CollateralTransferLog {
+  id: ID!
+  src: Bytes!
+  dst: Bytes!
+  amount: BigDecimal!
+  collateral: Collateral!
+  direction: Direction!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+" Particular collateral type registered in the system (Ilk) "
+type CollateralType {
+  " Collateral type name "
+  id: ID!
+  " Debt ceiling [DAI] (line) "
+  debtCeiling: BigDecimal!
+  " Debt backed by this collateral type [DAI] (Art)"
+  debtNormalized: BigDecimal!
+  " Asset/DAI exchange rate (rate) "
+  rate: BigDecimal!
+  " Total assets locked as collateral"
+  totalCollateral: BigDecimal!
+  " Total debt backed by this collateral type [DAI] (Ilk.Art * rate)"
+  totalDebt: BigDecimal!
+  " Maximum size of collateral that can be auctioned at once (lump) "
+  liquidationLotSize: BigDecimal!
+  " Liquidation penalty (chop [wad]) "
+  liquidationPenalty: BigDecimal!
+  " Min collateralization ratio "
+  liquidationRatio: BigDecimal!
+  " Amt DAI needed to cover debt+fees of active auctions per ilk [rad] "
+  daiAmountToCoverDebtAndFees: BigDecimal!
+  " Max DAI needed to cover debt+fees of active auctions per ilk [rad] (hole)"
+  maxDaiToCoverAuction: BigDecimal!
+  " The address of the Liquidator (clip)"
+  liquidatorAddress: Bytes!
+  " Stability fee rate per second "
+  stabilityFee: BigDecimal!
+  stabilityFeeUpdatedAt: BigInt!
+  " Collateral auctions for this collateral type "
+  vaults: [Vault!]
+  " Min debt per vault [DAI] (dust) "
+  vaultDebtFloor: BigDecimal!
+  " Number of vaults opened through the manager (CdpManager) "
+  vaultCount: BigInt!
+  " Number of vaults NOT opened through the manager (CdpManager) "
+  unmanagedVaultCount: BigInt!
+  " Sale auctions for the collateral type "
+  saleAuctions: [SaleAuction!]
+  " Current market price [USD] "
+  price: CollateralPrice
+  " Price history "
+  prices: [CollateralPrice!]
+  " Timestamp of the block in which this collateral type was added [seconds] "
+  addedAt: BigInt!
+  " Block number in which this collateral type was added "
+  addedAtBlock: BigInt!
+  " Transaction hash in which this collateral type was added "
+  addedAtTransaction: Bytes!
+  " Timestamp of the block in which this collateral type was last modified [seconds] "
+  updatedAt: BigInt
+  " Block number in which this collateral type was last modified "
+  updatedAtBlock: BigInt
+  " Transaction hash in which this collateral type was last modified "
+  updatedAtTransaction: Bytes
+}
+
+type DaiApproval {
+  id: ID!
+  " User account sender "
+  owner: User!
+  " User account authorized to spend DAI "
+  spender: User!
+  " Amount of DAI approved "
+  amount: BigDecimal!
+  " Timestamp of the approval "
+  createdAt: BigInt!
+  " Timestamp of the update approval "
+  updatedAt: BigInt!
+}
+
+type DaiMoveLog {
+  id: ID!
+  src: Bytes!
+  dst: Bytes!
+  amount: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type DaiTransfer {
+  " Equals to: <transaction.hash>-<event.logindex>"
+  id: ID!
+  block: BigInt!
+  transaction: Bytes!
+  " timestamp of the transfer "
+  timestamp: BigInt!
+  " User of the sender "
+  src: User!
+  " User of the receiver "
+  dst: User!
+  " Amount of DAI transferred "
+  amount: BigDecimal!
+}
+
+type DebtAuction {
+  " incrementing number. Equals to the String of the Flopper#ID "
+  id: ID!
+  " Bid amount in DAI "
+  bidAmount: BigInt!
+  " auction quantity up for sale (lot) "
+  quantity: BigInt!
+  " the highest auction bidder (guy) "
+  highestBidder: Bytes!
+  " TS when the auction ends "
+  endTimeAt: BigInt!
+  " TS CreatedAt (kick time) "
+  createdAt: BigInt!
+  " TS modifiedAt "
+  updatedAt: BigInt!
+  "False if Auction was deleted "
+  active: Boolean!
+  "Timestamp when the auction was deleted"
+  deletedAt: BigInt!
+}
+
+type LiveChangeLog {
+  id: ID!
+  contract: Bytes!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type MkrApproval {
+  " Equals to: <owner>-<spender> "
+  id: ID!
+  owner: User!
+  spender: User!
+  amount: BigDecimal!
+  createdAt: BigInt!
+  updatedAt: BigInt!
+}
+
+type MkrTransfer {
+  " Equals to: <src>-<dst>-<tx> "
+  id: ID!
+  src: User!
+  dst: User!
+  amount: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type PopDebtQueueLog {
+  id: ID!
+  amount: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type PushDebtQueueLog {
+  id: ID!
+  amount: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type SaleAuction {
+  id: ID!
+  " The target DAI to raise from the auction [tab in SmartContract]"
+  amountDaiToRaise: BigDecimal!
+  " The Vault that gets liquidated "
+  vault: Vault!
+  " The Collateral that gets auctioned off "
+  collateralType: CollateralType!
+  " The amount of collateral available for purchase [lot in SmartContract]"
+  amountCollateralToSell: BigDecimal!
+  " User to return any excess collateral [usr in SmartContract]"
+  userExcessCollateral: User!
+  " User where DAI incentives will be sent [kpr in SmartContract]"
+  userIncentives: User!
+  " Auction inicial price [top in SmartContract]"
+  startingPrice: BigDecimal!
+  " Auction start time [tic in SmartContract]"
+  startedAt: BigInt!
+  " Last Update timesmatp"
+  updatedAt: BigInt!
+  " Auction reset time "
+  resetedAt: BigInt!
+  " Auction buy time "
+  boughtAt: BigInt!
+  " timestamp when the Auction was removed"
+  deletedAt: BigInt!
+  " Auction is active "
+  isActive: Boolean!
+  " Clipper cpntract addres "
+  clipperContract: Bytes!
+}
+
+type SpotParLog {
+  id: ID!
+  timestamp: BigInt!
+  block: BigInt!
+  transaction: Bytes!
+  " Value of DAI in the reference asset (e.g. $1 per DAI) "
+  par: BigInt!
+}
+
+type SurplusAuction {
+  " incrementing number. Equals to the String of the Flapper#ID "
+  id: ID!
+  " Bid amount in DAI "
+  bidAmount: BigInt!
+  " auction quantity up for sale (lot) "
+  quantity: BigInt!
+  " the highest auction bidder (guy) "
+  highestBidder: Bytes!
+  " TS when the auction ends "
+  endTimeAt: BigInt!
+  " TS CreatedAt (kick time) "
+  createdAt: BigInt!
+  " TS modifiedAt "
+  updatedAt: BigInt!
+  "False if Auction was deleted "
+  active: Boolean!
+  "Timestamp when the auction was deleted"
+  deletedAt: BigInt!
+}
+
+type SystemDebt {
+  id: ID!
+  owner: User
+  amount: BigDecimal!
+}
+
+" Provide information about the current system state and parameters "
+type SystemState {
+  " Singleton entity. Equals to 'current' "
+  id: ID!
+  " Total mkr issued [MKR] DSToken._supply"
+  totalMkr: BigDecimal!
+  " Total debt issued [DAI] (Vat.debt)"
+  totalDebt: BigDecimal!
+  "Total unbacked debt DAI (Vat.vice)"
+  totalSystemDebt: BigDecimal!
+  systemDebt: [SystemDebt!]
+  systemDebtInQueue: BigDecimal!
+  " Number of collateral types registered "
+  collateralCount: BigInt!
+  " Number of user proxies created "
+  userProxyCount: BigInt!
+  " Number of vaults NOT opened through the manager (CdpManager) "
+  unmanagedVaultCount: BigInt!
+  " Number of vaults opened through the manager (CdpManager) "
+  vaultCount: BigInt!
+  " Base rate for stability fee per second "
+  baseStabilityFee: BigDecimal!
+  " Dai Savings Rate "
+  savingsRate: BigDecimal!
+  " Total Debt Ceiling "
+  totalDebtCeiling: BigDecimal!
+  " Address that conforms to a FlapLike interface "
+  vowFlapperContract: Bytes!
+  " Address that conforms to a Floplike interface "
+  vowFlopperContract: Bytes!
+  " Max bid duration / single bid lifetime [seconds] "
+  debtAuctionBidDuration: BigInt
+  " The fixed debt quantity to be covered by any one debt auction [DAI] "
+  debtAuctionBidSize: BigDecimal
+  " Debt auction delay [seconds] "
+  debtAuctionDelay: BigInt
+  " Maximum auction duration [seconds] "
+  debtAuctionDuration: BigInt
+  " The starting amount of MKR offered to cover the lot [MKR] "
+  debtAuctionInitialLotSize: BigDecimal
+  " Lot size increase "
+  debtAuctionLotSizeIncrease: BigDecimal
+  " Minimum bid increase "
+  debtAuctionMinimumBidIncrease: BigDecimal
+  " Vow#Ash the total amount of on-auction debt."
+  debtOnAuctionTotalAmount: BigDecimal
+  " Max bid duration / bid lifetime [seconds] "
+  surplusAuctionBidDuration: BigInt
+  " Surplus buffer, must be exceeded before surplus auctions are possible [DAI] "
+  surplusAuctionBuffer: BigDecimal
+  " Maximum auction duration [seconds] "
+  surplusAuctionDuration: BigInt
+  " The fixed surplus quantity to be sold by any one surplus auction [DAI] "
+  surplusAuctionLotSize: BigDecimal
+  " Minimum bid increase "
+  surplusAuctionMinimumBidIncrease: BigDecimal
+  " Address of the vow contract modify by Jug Contract"
+  jugVowContract: Bytes!
+  " Dai Savings Rate Live"
+  dsrLive: Boolean!
+  " Dai Savings Rate Live LastUpdate"
+  dsrLiveUpdatedAt: BigInt!
+  " Address that conforms to a VowLike interface "
+  potVowContract: Bytes!
+  " Total savings in DAI of all users (Pot#Pie) "
+  totalSavingsInPot: BigDecimal!
+  " Value which decides how much dai - given when drip() is called "
+  rateAccumulator: BigInt
+  " last time the drip() function was called "
+  lastPotDripAt: BigInt
+  " Max DAI needed to cover debt+fees of active auctions [rad] (Hole)"
+  maxDaiToCoverAuction: BigDecimal!
+  " Address that conforms to a VowLike interface "
+  dogVowContract: Bytes!
+  " Total supply of ERC20.DAI "
+  daiTotalSupply: BigDecimal!
+  " Amount of DAI needed to cover debt + fees of active auctions (Dog#Dirt) "
+  totalDaiAmountToCoverDebtAndFees: BigDecimal!
+  " Multiplicative factor to increase starting price (Clipper#buf)"
+  saleAuctionStartingPriceFactor: BigDecimal!
+  " Time elapsed before auction reset (Clipper#tail)"
+  saleAuctionResetTime: BigInt!
+  " Percentage drop before auction reset (Clipper#cusp) "
+  saleAuctionDropPercentage: BigDecimal!
+  " Percentage of tab to suck from vow to incentivize keepers (Clipper#chip) "
+  saleAuctionDaiToRaisePercentage: BigDecimal!
+  " Flat fee to suck from vow to incentivize keepers (Clipper#tip) "
+  saleAuctionFlatFee: BigDecimal!
+  " Spotter contract address on Clipper (Clipper#spotter) "
+  saleAuctionSpotterContract: Bytes!
+  " Dog contract address on Clipper (Clipper#dog) "
+  saleAuctionDogContract: Bytes!
+  " Vow contract address on Clipper (Clipper#vow) "
+  saleAuctionVowContract: Bytes!
+  " Calc contract address on Clipper (Clipper#calc) "
+  saleAuctionCalcContract: Bytes!
+  " Length of time between price drops (cut)"
+  secondsBetweenPriceDrops: BigInt!
+  " Per-step multiplicative factor (step) [ray]"
+  multiplicatorFactorPerStep: BigDecimal!
+}
+
+" Vault owner "
+type User {
+  " Equals to account address "
+  id: ID!
+  " Account address "
+  address: Bytes!
+  " User's DAI in the Vault"
+  totalVaultDai: BigDecimal!
+  " User's Total Erc20.DAI "
+  totalDaiBalance: BigDecimal!
+  " The user savings in DAI (Pot#pie) "
+  savings: BigDecimal!
+  " Total maker balance "
+  totalMkrBalance: BigDecimal!
+  " Number of user proxies associated to the user "
+  proxyCount: BigInt!
+  " Number of vaults opened by the user "
+  vaultCount: BigInt!
+  " User proxies. Up to one per collateral type "
+  proxies: [UserProxy!]
+  " User's vaults "
+  vaults: [Vault!]
+  " User's collaterals "
+  collaterals: [Collateral!]
+  " User's Outgoing Transfers for DAI "
+  daiOutgoingTransfers: [DaiTransfer!]
+  " User's Incoming Transfers for DAI "
+  daiIncomingTransfers: [DaiTransfer!]
+  " User's dai approvals "
+  daiApprovals: [DaiApproval!]
+  " User's mkr outgoing transfers "
+  mkrOutgoingTransfers: [MkrTransfer!]
+  " User's mkr incoming transfers "
+  mkrIncomingTransfers: [MkrTransfer!]
+  " User's mkr approvals "
+  mkrApprovals: [MkrApproval!]
+}
+
+" Contract used to execute transactions and sequences of transactions on behalf of a user "
+type UserProxy {
+  " Proxy address "
+  id: ID!
+  " Proxy contract address "
+  address: Bytes!
+  " Cache contract address "
+  cache: Bytes!
+  " User reference "
+  owner: User!
+}
+
+" Maker Vault (formerly collateralized debt position or CDPs) "
+type Vault {
+  " Equals to: <urn>-<ilk>"
+  id: ID!
+  " CDP ID if this vault was created through the manager (CdpManager) "
+  cdpId: BigInt
+  " Collateral type associated to this vault (ilk) "
+  collateralType: CollateralType!
+  " Assets locked as collateral (ink) "
+  collateral: BigDecimal!
+  " Outstanding debt (art) [DAI] "
+  debt: BigDecimal!
+  " Address of this vault's UrnHandler instance "
+  handler: Bytes!
+  " Address of vault's owner "
+  owner: User!
+  " Timestamp of the block in which this vault was opened [seconds] "
+  openedAt: BigInt
+  " Block number in which this vault was opened "
+  openedAtBlock: BigInt
+  " Transaction hash in which this vault was opened "
+  openedAtTransaction: Bytes
+  " Timestamp of the block in which this vault was last modified [seconds] "
+  updatedAt: BigInt
+  " Block number in which this vault was last modified "
+  updatedAtBlock: BigInt
+  " Transaction hash in which this vault was last modified "
+  updatedAtTransaction: Bytes
+  " Vault action history "
+  logs: [VaultLog!]
+}
+
+type VaultCollateralChangeLog {
+  id: ID!
+  vault: Vault!
+  collateralBefore: BigDecimal!
+  collateralAfter: BigDecimal!
+  collateralDiff: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type VaultCreationLog {
+  id: ID!
+  vault: Vault!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type VaultDebtChangeLog {
+  id: ID!
+  vault: Vault!
+  debtBefore: BigDecimal!
+  debtAfter: BigDecimal!
+  debtDiff: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type VaultSplitChangeLog {
+  id: ID!
+  vault: Vault!
+  src: Bytes!
+  dst: Bytes!
+  collateralToMove: BigDecimal!
+  debtToMove: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type VaultTransferChangeLog {
+  id: ID!
+  vault: Vault!
+  previousOwner: User!
+  nextOwner: User!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+}
+
+type VowFlapLog {
+  id: ID!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+  " bump "
+  surplusAuctionLotSize: BigDecimal!
+}
+
+type VowFlopLog {
+  id: ID!
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
+  " address(this) "
+  sourceContract: Bytes!
+  " dump "
+  debtAuctionLotSize: BigDecimal!
+  " sump "
+  debtAuctionBidSize: BigDecimal!
+}

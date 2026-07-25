@@ -1,0 +1,291 @@
+# Condensed subgraph schema.
+# Filters and ordering follow standard subgraph conventions and are omitted here:
+#   where: { <field>: value, <field>_gt: value, <field>_lt: value,
+#            <field>_gte: value, <field>_lte: value, <field>_in: [values],
+#            <field>_not: value, <field>_contains: substring, ... }
+#   orderBy: <any field on the entity>
+#   orderDirection: asc | desc
+#   first: <n>   skip: <n>   block: { number: <n> }
+# Apply these to any list query on the entities below.
+
+
+scalar BigDecimal
+scalar BigInt
+scalar Bytes
+
+enum ActionType {
+  LOCK
+  FREE
+  LIFT
+  VOTE
+  VOTER
+  ETCH
+  CAST
+  POLL_CREATED
+}
+
+enum Aggregation_interval {
+  hour
+  day
+}
+
+type Action {
+  id: ID!
+  sender: Bytes
+  " Action name (act) "
+  type: ActionType!
+  " Action value (arg) "
+  wad: BigDecimal
+  " New Hat"
+  hat: Bytes
+  " Spell casted"
+  spell: Bytes
+  " Votes"
+  yays: [Bytes!]
+  " Slate voted"
+  slate: Bytes
+  " New voter address"
+  voterAddress: Bytes
+  " Is the new voter a VoteProxy"
+  isVoteProxy: Boolean
+  " Block number "
+  block: BigInt!
+  " Transaction hash (tx) "
+  transactionHash: Bytes!
+  " Action timestamp as seconds (time) "
+  timestamp: BigInt!
+}
+
+type AddAction {
+  " Equals to: <ADD | ADD-ARRAY>-<transactionHash>-<logIndex> "
+  id: ID!
+  " Voter's Address "
+  sender: Bytes!
+  " Spell related to this action"
+  spell: Spell
+  " Amount of loked MKR the sender had at the moment this action is performed"
+  locked: BigDecimal!
+  " Block number "
+  block: BigInt!
+  " Transaction hash (tx) "
+  transactionHash: Bytes!
+  " Action timestamp as seconds (time) "
+  timestamp: BigInt!
+}
+
+type AddressVoter {
+  " Address"
+  id: ID!
+  " Amount of loked MKR"
+  locked: BigDecimal!
+  " Its currents voted slate"
+  votedSlate: Slate
+  " Action timestamp as seconds (time) "
+  timestamp: BigInt!
+}
+
+type CreatePollAction {
+  " Equals to: <CREATE>-<transactionHash>-<creator> "
+  id: ID!
+  " Spell related to this action"
+  poll: Poll
+  " Block number "
+  block: BigInt!
+  " Transaction hash (tx) "
+  transactionHash: Bytes!
+  " Action timestamp as seconds (time) "
+  timestamp: BigInt!
+}
+
+type FreeAction {
+  " Equals to: <FREE>-<transactionHash>-<logIndex> "
+  id: ID!
+  " Voter's Address "
+  sender: Bytes!
+  " Spell related to this action"
+  spell: Spell
+  " Amount of MKR locked or withdrawn"
+  wad: BigDecimal!
+  " Block number "
+  block: BigInt!
+  " Transaction hash (tx) "
+  transactionHash: Bytes!
+  " Action timestamp as seconds (time) "
+  timestamp: BigInt!
+}
+
+type GovernanceInfo {
+  id: ID!
+  countProxies: BigInt!
+  countAddresses: BigInt!
+  countSlates: BigInt!
+  countSpells: BigInt!
+  countLock: BigInt!
+  countFree: BigInt!
+  countPolls: BigInt!
+  countCasted: BigInt!
+  locked: BigDecimal!
+  lastBlock: BigInt!
+  lastSynced: BigInt!
+  hat: Bytes
+  active: Bytes
+}
+
+type LockAction {
+  " Equals to: <LOCK>-<transactionHash>-<logIndex> "
+  id: ID!
+  " Voter's Address "
+  sender: Bytes!
+  " Spell related to this action"
+  spell: Spell
+  " Amount of MKR locked or withdrawn"
+  wad: BigDecimal!
+  " Block number "
+  block: BigInt!
+  " Transaction hash (tx) "
+  transactionHash: Bytes!
+  " Action timestamp as seconds (time) "
+  timestamp: BigInt!
+}
+
+type Poll {
+  " Equals to: <Poll ID> "
+  id: ID!
+  creator: Bytes
+  blockCreated: BigInt!
+  pollId: BigInt!
+  startDate: BigInt!
+  endDate: BigInt!
+  multiHash: String
+  url: String
+  " Withdrawal timestamp "
+  withdrawn: BigInt
+  " Number votes"
+  votesCount: BigInt!
+  votes: [PollVote!]
+  " Number of record in timeLine "
+  timeLineCount: BigInt!
+  " Poll historical data "
+  timeLine: [PollAction!]
+}
+
+type PollVote {
+  " Equals to: <Poll ID>-<Voter's Address> "
+  id: ID!
+  " Voters's Address "
+  voter: Bytes!
+  " Poll related to this action"
+  poll: Poll
+  " Selected option "
+  option: BigInt!
+  " Block number "
+  block: BigInt!
+  " Transaction hash (tx) "
+  transactionHash: Bytes!
+  " Vote timestamp as seconds (time) "
+  timestamp: BigInt!
+}
+
+type RemoveAction {
+  " Equals to: <REMOVE | REMOVE-ARRAY>-<transactionHash>-<logIndex> "
+  id: ID!
+  " Voter's Address "
+  sender: Bytes!
+  " Spell related to this action"
+  spell: Spell
+  " Amount of loked MKR the sender had at the moment this action is performed"
+  locked: BigDecimal!
+  " Block number "
+  block: BigInt!
+  " Transaction hash (tx) "
+  transactionHash: Bytes!
+  " Action timestamp as seconds (time) "
+  timestamp: BigInt!
+}
+
+type Slate {
+  id: ID!
+  yays: [Bytes!]
+  " Timestamp when the slate was created as seconds"
+  timestamp: BigInt!
+  votedByProxies: [VoteProxy!]
+  votedByAddresses: [AddressVoter!]
+}
+
+type Spell {
+  " ID represent the contract address "
+  id: ID!
+  " Timestamp when the spell was voted by the first time"
+  timestamp: BigInt!
+  " Spell's data "
+  data: Bytes
+  " Timestamp when the spell is casted"
+  casted: BigInt
+  " How much MKR it has when the spell is casted"
+  castedWith: BigDecimal
+  " Timestamp when the spell is casted"
+  lifted: BigInt
+  " How much MKR it has when the spell is lifted to hat"
+  liftedWith: BigDecimal
+  " Total MKR supporting this spell"
+  approvals: BigDecimal!
+  " Total voters supporting this spell"
+  totalVotes: BigInt
+  timeLineCount: BigInt!
+  timeLine: [VotingAction!]
+}
+
+type VotePollAction {
+  " Equals to: <VOTE>-<transactionHash>-<voter> "
+  id: ID!
+  " Voter's Address "
+  sender: Bytes!
+  " Spell related to this action"
+  poll: Poll
+  " Selected option "
+  option: BigInt!
+  " Block number "
+  block: BigInt!
+  " Transaction hash (tx) "
+  transactionHash: Bytes!
+  " Action timestamp as seconds (time) "
+  timestamp: BigInt!
+}
+
+type VoteProxy {
+  " VoteProxy address"
+  id: ID!
+  " Amount of loked MKR"
+  locked: BigDecimal!
+  owner: VoterRegistry!
+  " Its currents voted slate"
+  votedSlate: Slate
+}
+
+type VoterRegistry {
+  id: ID!
+  coldAddress: Bytes!
+  hotAddress: Bytes!
+  voteProxies: [VoteProxy!]!
+  " Block number "
+  block: BigInt!
+  " Transaction hash (tx) "
+  transactionHash: Bytes!
+  " Timestamp as seconds (time) "
+  timestamp: BigInt!
+}
+
+type WithdrawPollAction {
+  " Equals to: <WITHDRAW>-<transactionHash>-<voter> "
+  id: ID!
+  " Voter's Address "
+  sender: Bytes!
+  " Spell related to this action"
+  poll: Poll
+  " Block number "
+  block: BigInt!
+  " Transaction hash (tx) "
+  transactionHash: Bytes!
+  " Action timestamp as seconds (time) "
+  timestamp: BigInt!
+}

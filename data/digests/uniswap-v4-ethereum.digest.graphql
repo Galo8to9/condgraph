@@ -1,0 +1,38 @@
+# Condensed subgraph schema.
+# Filters and ordering follow standard subgraph conventions and are omitted here:
+#   where: { <field>: value, <field>_gt: value, <field>_lt: value,
+#            <field>_gte: value, <field>_lte: value, <field>_in: [values],
+#            <field>_not: value, <field>_contains: substring, ... }
+#   orderBy: <any field on the entity>
+#   orderDirection: asc | desc
+#   first: <n>   skip: <n>   block: { number: <n> }
+# Apply these to any list query on the entities below.
+
+
+scalar BigInt
+scalar Bytes
+
+enum Aggregation_current {
+  exclude
+  include
+}
+
+enum Aggregation_interval {
+  hour
+  day
+}
+
+type Pool {
+  id: Bytes!
+  poolId: Bytes!
+  currency0: Bytes!
+  currency1: Bytes!
+  fee: Int!
+  tickSpacing: Int!
+  hooks: Bytes!
+  sqrtPriceX96: BigInt!
+  tick: Int!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

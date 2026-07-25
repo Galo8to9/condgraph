@@ -1,0 +1,388 @@
+# Condensed subgraph schema.
+# Filters and ordering follow standard subgraph conventions and are omitted here:
+#   where: { <field>: value, <field>_gt: value, <field>_lt: value,
+#            <field>_gte: value, <field>_lte: value, <field>_in: [values],
+#            <field>_not: value, <field>_contains: substring, ... }
+#   orderBy: <any field on the entity>
+#   orderDirection: asc | desc
+#   first: <n>   skip: <n>   block: { number: <n> }
+# Apply these to any list query on the entities below.
+
+
+scalar BigDecimal
+scalar BigInt
+scalar Bytes
+
+enum Aggregation_current {
+  exclude
+  include
+}
+
+enum Aggregation_interval {
+  hour
+  day
+}
+
+enum InvestType {
+  Join
+  Exit
+}
+
+enum OperationType {
+  Deposit
+  Withdraw
+  Update
+}
+
+type AmpUpdate {
+  id: ID!
+  poolId: Pool!
+  scheduledTimestamp: Int!
+  startTimestamp: BigInt!
+  endTimestamp: BigInt!
+  startAmp: BigInt!
+  endAmp: BigInt!
+}
+
+type Balancer {
+  id: ID!
+  poolCount: Int!
+  pools: [Pool!]
+  snapshots: [BalancerSnapshot!]
+  totalLiquidity: BigDecimal!
+  totalSwapCount: BigInt!
+  totalSwapVolume: BigDecimal!
+  totalSwapFee: BigDecimal!
+  totalProtocolFee: BigDecimal
+  protocolFeesCollector: Bytes
+}
+
+type BalancerSnapshot {
+  id: ID!
+  vault: Balancer!
+  timestamp: Int!
+  poolCount: Int!
+  totalLiquidity: BigDecimal!
+  totalSwapCount: BigInt!
+  totalSwapVolume: BigDecimal!
+  totalSwapFee: BigDecimal!
+  totalProtocolFee: BigDecimal
+}
+
+type CircuitBreaker {
+  id: ID!
+  pool: Pool!
+  token: PoolToken!
+  bptPrice: BigDecimal!
+  lowerBoundPercentage: BigDecimal!
+  upperBoundPercentage: BigDecimal!
+}
+
+type FXOracle {
+  id: ID!
+  tokens: [Bytes!]!
+  divisor: String
+  decimals: Int
+}
+
+type GradualWeightUpdate {
+  id: ID!
+  poolId: Pool!
+  scheduledTimestamp: Int!
+  startTimestamp: BigInt!
+  endTimestamp: BigInt!
+  startWeights: [BigInt!]!
+  endWeights: [BigInt!]!
+}
+
+type JoinExit {
+  id: ID!
+  type: InvestType!
+  sender: Bytes!
+  amounts: [BigDecimal!]!
+  valueUSD: BigDecimal
+  pool: Pool!
+  user: User!
+  timestamp: Int!
+  tx: Bytes!
+  block: BigInt
+}
+
+type LatestPrice {
+  id: ID!
+  asset: Bytes!
+  pricingAsset: Bytes!
+  poolId: Pool!
+  price: BigDecimal!
+  block: BigInt!
+}
+
+type ManagementOperation {
+  id: ID!
+  type: OperationType!
+  cashDelta: BigDecimal!
+  managedDelta: BigDecimal!
+  poolTokenId: PoolToken!
+  timestamp: Int!
+}
+
+type Pool {
+  id: ID!
+  address: Bytes!
+  poolType: String
+  poolTypeVersion: Int
+  factory: Bytes
+  strategyType: Int!
+  oracleEnabled: Boolean!
+  symbol: String
+  name: String
+  "Indicates if a pool can be swapped against. Combines multiple sources, including offchain curation"
+  swapEnabled: Boolean!
+  "The native swapEnabled boolean. internal to the pool. Only applies to Gyro, LBPs and InvestmentPools"
+  swapEnabledInternal: Boolean
+  "External indication from an offchain permissioned actor"
+  swapEnabledCurationSignal: Boolean
+  swapFee: BigDecimal!
+  owner: Bytes
+  isPaused: Boolean
+  totalWeight: BigDecimal
+  totalSwapVolume: BigDecimal!
+  totalSwapFee: BigDecimal!
+  totalLiquidity: BigDecimal!
+  totalLiquiditySansBPT: BigDecimal
+  totalShares: BigDecimal!
+  totalProtocolFee: BigDecimal
+  createTime: Int!
+  swapsCount: BigInt!
+  holdersCount: BigInt!
+  vaultID: Balancer!
+  tx: Bytes
+  tokensList: [Bytes!]!
+  tokens: [PoolToken!]
+  joinsExits: [JoinExit!]
+  swaps: [Swap!]
+  shares: [PoolShare!]
+  snapshots: [PoolSnapshot!]
+  historicalValues: [PoolHistoricalLiquidity!]
+  weightUpdates: [GradualWeightUpdate!]
+  amp: BigInt
+  latestAmpUpdate: AmpUpdate
+  ampUpdates: [AmpUpdate!]
+  priceRateProviders: [PriceRateProvider!]
+  principalToken: Bytes
+  baseToken: Bytes
+  expiryTime: BigInt
+  unitSeconds: BigInt
+  managementFee: BigDecimal
+  joinExitEnabled: Boolean
+  mustAllowlistLPs: Boolean
+  managementAumFee: BigDecimal
+  totalAumFeeCollectedInBPT: BigDecimal
+  circuitBreakers: [CircuitBreaker!]
+  mainIndex: Int
+  wrappedIndex: Int
+  lowerTarget: BigDecimal
+  upperTarget: BigDecimal
+  sqrtAlpha: BigDecimal
+  sqrtBeta: BigDecimal
+  root3Alpha: BigDecimal
+  c: BigDecimal
+  s: BigDecimal
+  tauAlphaX: BigDecimal
+  tauAlphaY: BigDecimal
+  tauBetaX: BigDecimal
+  tauBetaY: BigDecimal
+  u: BigDecimal
+  v: BigDecimal
+  w: BigDecimal
+  z: BigDecimal
+  dSq: BigDecimal
+  alpha: BigDecimal
+  beta: BigDecimal
+  lambda: BigDecimal
+  delta: BigDecimal
+  epsilon: BigDecimal
+  isInRecoveryMode: Boolean
+  protocolSwapFeeCache: BigDecimal
+  protocolYieldFeeCache: BigDecimal
+  protocolAumFeeCache: BigDecimal
+  totalProtocolFeePaidInBPT: BigDecimal
+  lastJoinExitAmp: BigInt
+  lastPostJoinExitInvariant: BigDecimal
+  protocolId: Int
+  protocolIdData: ProtocolIdData
+}
+
+type PoolContract {
+  id: ID!
+  pool: Pool!
+}
+
+type PoolHistoricalLiquidity {
+  id: ID!
+  poolId: Pool!
+  poolTotalShares: BigDecimal!
+  poolLiquidity: BigDecimal!
+  poolShareValue: BigDecimal!
+  pricingAsset: Bytes!
+  block: BigInt!
+}
+
+type PoolShare {
+  id: ID!
+  userAddress: User!
+  poolId: Pool!
+  balance: BigDecimal!
+}
+
+type PoolSnapshot {
+  id: ID!
+  pool: Pool!
+  amounts: [BigDecimal!]!
+  totalShares: BigDecimal!
+  swapVolume: BigDecimal!
+  protocolFee: BigDecimal
+  swapFees: BigDecimal!
+  liquidity: BigDecimal!
+  swapsCount: BigInt!
+  holdersCount: BigInt!
+  timestamp: Int!
+}
+
+type PoolToken {
+  id: ID!
+  poolId: Pool
+  token: Token!
+  assetManager: Bytes!
+  symbol: String!
+  name: String!
+  decimals: Int!
+  index: Int
+  address: String!
+  oldPriceRate: BigDecimal
+  priceRate: BigDecimal!
+  balance: BigDecimal!
+  paidProtocolFees: BigDecimal
+  cashBalance: BigDecimal!
+  managedBalance: BigDecimal!
+  managements: [ManagementOperation!]
+  weight: BigDecimal
+  isExemptFromYieldProtocolFee: Boolean
+  circuitBreaker: CircuitBreaker
+}
+
+type PriceRateProvider {
+  id: ID!
+  poolId: Pool!
+  token: PoolToken!
+  address: Bytes!
+  rate: BigDecimal
+  lastCached: Int
+  cacheDuration: Int
+  cacheExpiry: Int
+}
+
+type ProtocolIdData {
+  id: ID!
+  name: String!
+}
+
+type Swap {
+  id: ID!
+  caller: Bytes!
+  tokenIn: Bytes!
+  tokenInSym: String!
+  tokenOut: Bytes!
+  tokenOutSym: String!
+  tokenAmountIn: BigDecimal!
+  tokenAmountOut: BigDecimal!
+  valueUSD: BigDecimal!
+  poolId: Pool!
+  userAddress: User!
+  timestamp: Int!
+  block: BigInt
+  tx: Bytes!
+}
+
+type SwapFeeUpdate {
+  id: ID!
+  pool: Pool!
+  scheduledTimestamp: Int!
+  startTimestamp: BigInt!
+  endTimestamp: BigInt!
+  startSwapFeePercentage: BigDecimal!
+  endSwapFeePercentage: BigDecimal!
+}
+
+type Token {
+  id: ID!
+  symbol: String
+  name: String
+  decimals: Int!
+  address: String!
+  totalBalanceUSD: BigDecimal!
+  totalBalanceNotional: BigDecimal!
+  totalVolumeUSD: BigDecimal!
+  totalVolumeNotional: BigDecimal!
+  totalSwapCount: BigInt!
+  latestPrice: LatestPrice
+  latestUSDPrice: BigDecimal
+  latestUSDPriceTimestamp: BigInt
+  latestFXPrice: BigDecimal
+  pool: Pool
+  fxOracleDecimals: Int
+}
+
+type TokenPrice {
+  id: ID!
+  poolId: Pool!
+  asset: Bytes!
+  amount: BigDecimal!
+  pricingAsset: Bytes!
+  price: BigDecimal!
+  block: BigInt!
+  timestamp: Int!
+}
+
+type TokenSnapshot {
+  id: ID!
+  token: Token!
+  timestamp: Int!
+  totalBalanceUSD: BigDecimal!
+  totalBalanceNotional: BigDecimal!
+  totalVolumeUSD: BigDecimal!
+  totalVolumeNotional: BigDecimal!
+  totalSwapCount: BigInt!
+}
+
+type TradePair {
+  "Token Address - Token Address"
+  id: ID!
+  token0: Token!
+  token1: Token!
+  totalSwapVolume: BigDecimal!
+  totalSwapFee: BigDecimal!
+}
+
+type TradePairSnapshot {
+  id: ID!
+  pair: TradePair!
+  timestamp: Int!
+  totalSwapVolume: BigDecimal!
+  totalSwapFee: BigDecimal!
+}
+
+type User {
+  id: ID!
+  sharesOwned: [PoolShare!]
+  swaps: [Swap!]
+  userInternalBalances: [UserInternalBalance!]
+}
+
+type UserInternalBalance {
+  id: ID!
+  userAddress: User
+  token: Bytes!
+  tokenInfo: Token
+  balance: BigDecimal!
+}

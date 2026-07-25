@@ -1,0 +1,394 @@
+# Condensed subgraph schema.
+# Filters and ordering follow standard subgraph conventions and are omitted here:
+#   where: { <field>: value, <field>_gt: value, <field>_lt: value,
+#            <field>_gte: value, <field>_lte: value, <field>_in: [values],
+#            <field>_not: value, <field>_contains: substring, ... }
+#   orderBy: <any field on the entity>
+#   orderDirection: asc | desc
+#   first: <n>   skip: <n>   block: { number: <n> }
+# Apply these to any list query on the entities below.
+
+
+scalar BigDecimal
+scalar BigInt
+scalar Bytes
+
+enum Aggregation_current {
+  exclude
+  include
+}
+
+enum Aggregation_interval {
+  hour
+  day
+}
+
+enum PairType {
+  CONSTANT_PRODUCT_POOL
+}
+
+type _TokenPair {
+  " id is created by combining token.id and count, e.g. 0x00x00:1 "
+  id: ID!
+  " Pair "
+  pair: Pair!
+  " Token "
+  token: Token!
+}
+
+" Bundle - should only ever be one created"
+type Bundle {
+  " hardcoded to '1'"
+  id: ID!
+  " Price of native "
+  nativePrice: BigDecimal!
+}
+
+type Burn {
+  " transaction.id:transaction.burns.length "
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt!
+  pair: Pair!
+  liquidity: BigDecimal!
+  sender: String
+  amount0: BigDecimal
+  amount1: BigDecimal
+  to: String
+  logIndex: BigInt
+  amountUSD: BigDecimal
+  complete: Boolean!
+  feeTo: String
+  feeLiquidity: BigDecimal
+}
+
+type Factory {
+  " Contract address "
+  id: ID!
+  " Volume USD "
+  volumeUSD: BigDecimal!
+  " Untracked Volume USD "
+  untrackedVolumeUSD: BigDecimal!
+  " Volume Native "
+  volumeNative: BigDecimal!
+  " Liquidity USD "
+  liquidityUSD: BigDecimal!
+  " Liquidity NATIVE "
+  liquidityNative: BigDecimal!
+  " Fees USD "
+  feesUSD: BigDecimal!
+  " Fees NATIVE "
+  feesNative: BigDecimal!
+  " Pair count "
+  pairCount: BigInt!
+  " Transaction count "
+  transactionCount: BigInt!
+  " Token count "
+  tokenCount: BigInt!
+  " User count "
+  userCount: BigInt!
+}
+
+type FactoryDaySnapshot {
+  " {factoryId}-day-{timestamp} "
+  id: ID!
+  factory: Factory!
+  date: Int!
+  volumeUSD: BigDecimal!
+  volumeNative: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type LiquidityPosition {
+  "pair.id:user.id"
+  id: ID!
+  pair: Pair!
+  user: User!
+  balance: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+type LiquidityPositionSnapshot {
+  " {lp.id}-{timestamp} "
+  id: ID!
+  liquidityPosition: LiquidityPosition!
+  " saved for fast historical lookups "
+  timestamp: Int!
+  " saved for fast historical lookups "
+  block: Int!
+  " reference to user "
+  user: User!
+  " reference to pair "
+  pair: Pair!
+  " snapshot of token0 price "
+  token0PriceUSD: BigDecimal!
+  " snapshot of token1 price "
+  token1PriceUSD: BigDecimal!
+  " snapshot of pair token0 reserves "
+  reserve0: BigInt!
+  " snapshot of pair token1 reserves "
+  reserve1: BigInt!
+  " snapshot of pair reserves in USD "
+  reserveUSD: BigDecimal!
+  " snapshot of pool token supply "
+  liquidityTokenTotalSupply: BigInt!
+  " snapshot of users pool token balance "
+  liquidityTokenBalance: BigInt!
+}
+
+type Mint {
+  " transaction.id:transaction.mints.length "
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt!
+  pair: Pair!
+  to: String!
+  liquidity: BigDecimal!
+  sender: Bytes
+  amount0: BigDecimal
+  amount1: BigDecimal
+  logIndex: BigInt
+  amountUSD: BigDecimal
+  feeTo: Bytes
+  feeLiquidity: BigDecimal
+}
+
+type Pair {
+  " Pair address (contract address) "
+  id: ID!
+  " Pair type "
+  type: PairType!
+  " Swap fee "
+  swapFee: BigInt!
+  " TWAP - time weighted average price "
+  twapEnabled: Boolean!
+  " name of the pair, this combines symbol of both tokens, e.g. WETH/SUSHI "
+  name: String!
+  " First Token "
+  token0: Token!
+  " Second Token "
+  token1: Token!
+  " Which source this pair comes from, in this case it will always be 'LEGACY' "
+  source: String!
+  " Which block this pair was created on "
+  createdAtBlock: BigInt!
+  " When this pair was created "
+  createdAtTimestamp: BigInt!
+  " Liquidity of first token "
+  reserve0: BigInt!
+  " Liquidity of second token "
+  reserve1: BigInt!
+  " Liquidity, Total supply of all LP in this pool "
+  liquidity: BigInt!
+  " USD liquidity"
+  liquidityUSD: BigDecimal!
+  " Native Liquidity "
+  liquidityNative: BigDecimal!
+  " Tracked Liquidity native "
+  trackedLiquidityNative: BigDecimal!
+  " Price of the first token in this pair, not to be confused with TokenPrice entity "
+  token0Price: BigDecimal!
+  " Price of the second token in this pair, not to be confused with TokenPrice entity "
+  token1Price: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  " Untracked Volume in USD "
+  untrackedVolumeUSD: BigDecimal!
+  volumeToken0: BigDecimal!
+  volumeToken1: BigDecimal!
+  " Fee in Native "
+  feesNative: BigDecimal!
+  " Fee in USD "
+  feesUSD: BigDecimal!
+  " APR "
+  apr: BigDecimal!
+  " When APR was last updated "
+  aprUpdatedAtTimestamp: BigInt!
+  " Transaction count "
+  txCount: BigInt!
+  " Liquidity Positions "
+  liquidityPositions: [LiquidityPosition!]!
+  " Liquidity position snapshots "
+  liquidityPositionSnapshots: [LiquidityPositionSnapshot!]!
+  " Pair Hour Snapshot "
+  hourSnapshots: [PairHourSnapshot!]!
+  " Pair Day Snapshot "
+  daySnapshots: [PairDaySnapshot!]!
+}
+
+type PairDaySnapshot {
+  " {pairId}-day-{timestamp} "
+  id: ID!
+  pair: Pair!
+  date: Int!
+  volumeUSD: BigDecimal!
+  volumeNative: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
+  volumeToken0: BigDecimal!
+  volumeToken1: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  apr: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type PairHourSnapshot {
+  " {pairId}-hour-{timestamp} "
+  id: ID!
+  pair: Pair!
+  date: Int!
+  volumeUSD: BigDecimal!
+  volumeNative: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
+  volumeToken0: BigDecimal!
+  volumeToken1: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  apr: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type PairWeeklySnapshot {
+  " {pairId}-weekly-{timestamp} "
+  id: ID!
+  pair: Pair!
+  date: Int!
+  volumeUSD: BigDecimal!
+  volumeNative: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
+  volumeToken0: BigDecimal!
+  volumeToken1: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  apr: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type Swap {
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt!
+  pair: Pair!
+  sender: String!
+  tokenIn: Token!
+  tokenOut: Token!
+  amountIn: BigDecimal!
+  amountOut: BigDecimal!
+  to: String!
+  logIndex: BigInt
+  amountUSD: BigDecimal!
+}
+
+type Token {
+  " Token address "
+  id: ID!
+  " Token Price "
+  price: TokenPrice!
+  " Symbol of the token "
+  symbol: String!
+  " if symbol was successfully retrieved "
+  symbolSuccess: Boolean!
+  " Name of the token "
+  name: String!
+  " if name was successfully retrieved "
+  nameSuccess: Boolean!
+  " Decimals of the token "
+  decimals: BigInt!
+  " if decimals were successfully retrieved "
+  decimalsSuccess: Boolean!
+  " Liquidity "
+  liquidity: BigInt!
+  " Liquidity in native "
+  liquidityNative: BigDecimal!
+  " Liquidity in USD "
+  liquidityUSD: BigDecimal!
+  " Volume "
+  volume: BigDecimal!
+  " Volume in native "
+  volumeNative: BigDecimal!
+  " Volume in USD "
+  volumeUSD: BigDecimal!
+  " Untracked Volume in USD "
+  untrackedVolumeUSD: BigDecimal!
+  " Fee in USD "
+  feesNative: BigDecimal!
+  " Volume in USD "
+  feesUSD: BigDecimal!
+  " Count of all the transactions "
+  txCount: BigInt!
+  " Count of all the pairs "
+  pairCount: BigInt!
+  " All pairs where this token is involved in "
+  pairs: [_TokenPair!]!
+}
+
+type TokenDaySnapshot {
+  " {tokenId}-day-{timestamp} "
+  id: ID!
+  date: Int!
+  token: Token!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  priceNative: BigDecimal!
+  priceUSD: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type TokenPrice {
+  " same as token entity id, address of token "
+  id: ID!
+  " Token "
+  token: Token!
+  " derived native, this is useful for calculating price. (derivedNative * bundle.nativePrice = USD price) "
+  derivedNative: BigDecimal!
+  " price in USD. NOTE: this will not always be up to date, it only updates when onSync event is emitted, bundle.nativePrice could have changed. "
+  lastUsdPrice: BigDecimal!
+  " Which token this price is based on "
+  pricedOffToken: Token
+  " Which pair this price is based on "
+  pricedOffPair: Pair
+}
+
+type Transaction {
+  " Tx hash "
+  id: ID!
+  gasLimit: BigInt!
+  gasPrice: BigInt!
+  " Gas used in native "
+  gasUsed: BigInt
+  cumulativeGasUsed: BigInt
+  " Gas used in USD "
+  gasUsedUSD: BigDecimal
+  mints: [Mint!]!
+  burns: [Burn!]!
+  swaps: [Swap!]!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+type User {
+  id: ID!
+  lpSnapshotsCount: BigInt!
+  liquidityPositions: [LiquidityPosition!]
+}
